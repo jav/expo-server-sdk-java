@@ -55,3 +55,12 @@ public class Main {
 }
 ```
 
+## Todo
+Make a proper library out of the package, publish to Maven Central.
+
+## See Also
+
+  * https://github.com/expo/expo-server-sdk-node
+  * https://github.com/expo/expo-server-sdk-ruby
+  * https://github.com/expo/expo-server-sdk-python
+  * https://github.com/expo/expo-server-sdk-rust
