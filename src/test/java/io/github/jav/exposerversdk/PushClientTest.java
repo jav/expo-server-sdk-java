@@ -1,4 +1,4 @@
-package org.ubillos.notificationsSDK;
+package io.github.jav.exposerversdk;
 
 import org.junit.jupiter.api.Test;
 

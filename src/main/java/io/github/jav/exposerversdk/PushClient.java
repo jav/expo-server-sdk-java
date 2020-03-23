@@ -1,4 +1,4 @@
-package org.ubillos.notificationsSDK;
+package io.github.jav.exposerversdk;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

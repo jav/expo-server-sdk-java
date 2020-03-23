@@ -1,4 +1,4 @@
-package org.ubillos.notificationsSDK;
+package io.github.jav.exposerversdk;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -12,8 +12,7 @@ import java.io.Writer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ExpoPushTicketTest {
-
+class ExpoPushRecieptTest {
     @Test
     void DetailErrorMayOnlyBeDeviceNotRegisteredInvalidCredentialsMessageTooBigOrMessageRateExceeded() {
         ExpoPushTicket ept = new ExpoPushTicket();

@@ -1,4 +1,4 @@
-package org.ubillos.notificationsSDK;
+package io.github.jav.exposerversdk;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
