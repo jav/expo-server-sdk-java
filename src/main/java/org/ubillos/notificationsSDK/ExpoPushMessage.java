@@ -1,4 +1,4 @@
-package org.ubillos.pushnotifications.notificationsSDK;
+package org.ubillos.notificationsSDK;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;

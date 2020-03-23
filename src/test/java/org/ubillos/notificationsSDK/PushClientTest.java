@@ -1,4 +1,4 @@
-package org.ubillos.pushnotifications.notificationsSDK;
+package org.ubillos.notificationsSDK;
 
 import org.junit.jupiter.api.Test;
 
