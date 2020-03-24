@@ -5,7 +5,7 @@
 
     <groupId>io.github.jav</groupId>
     <artifactId>expo-server-sdk</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
     <name>expo-server-sdk</name>
     <description>
         Java implementation of expo-server-sdk implementation.
