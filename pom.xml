@@ -4,12 +4,12 @@
 
     <groupId>org.example</groupId>
     <artifactId>expo-server-sdk</artifactId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
     <scm>
         <connection>scm:git:git://github.com/jav/expo-server-sdk-java.git</connection>
         <developerConnection>scm:git:git@github.com:jav/expo-server-sdk-java.git</developerConnection>
         <url>https://github.com/jav/expo-server-sdk-java</url>
-        <tag>expo-server-sdk-0.1</tag>
+        <tag>HEAD</tag>
     </scm>
     <build>
         <plugins>
