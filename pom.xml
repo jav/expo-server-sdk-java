@@ -6,6 +6,26 @@
     <groupId>io.github.jav</groupId>
     <artifactId>expo-server-sdk</artifactId>
     <version>0.2</version>
+    <name>expo-server-sdk</name>
+    <description>
+        Java implementation of expo-server-sdk implementation.
+        Classes and methods to manage push notifications
+    </description>
+    <url>https://github.com/jav/expo-server-sdk-java</url>
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>https://raw.githubusercontent.com/ConvertAPI/convertapi-java/master/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>jav</id>
+            <name>Javier Ubillos</name>
+            <email>javier@ubillos.org</email>
+        </developer>
+    </developers>
     <scm>
         <connection>scm:git:git://github.com/jav/expo-server-sdk-java.git</connection>
         <developerConnection>scm:git:git@github.com:jav/expo-server-sdk-java.git</developerConnection>
