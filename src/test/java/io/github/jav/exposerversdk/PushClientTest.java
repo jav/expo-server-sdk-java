@@ -11,16 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PushClientTest {
 
-    long _coundAndValidateMessages(List<List<ExpoPushMessage>> chunks) {
-        long totalMessageCount = 0;
-        for (List<ExpoPushMessage> chunk : chunks) {
-            long chunkMessagesCount = PushClient._getActualMessagesCount(chunk);
-            assertTrue(chunkMessagesCount <= PushClient.PUSH_NOTIFICATION_CHUNK_LIMIT);
-            totalMessageCount += chunkMessagesCount;
-        }
-        return totalMessageCount;
-    }
-
     @Test
     public void chunkListsOfPushNotificationMessages() {
         PushClient client = new PushClient();
@@ -52,7 +42,7 @@ class PushClientTest {
         chunks.stream().forEach(
                 (c) -> assertEquals(1, c.size())
         );
-        long totalMessageCount = _coundAndValidateMessages(chunks);
+        long totalMessageCount = _countAndValidateMessages(chunks);
         assertEquals(totalMessageCount, messagesLength);
     }
 
@@ -78,7 +68,7 @@ class PushClientTest {
         messages.addAll(Collections.nCopies(10, new ExpoPushMessage("?")));
 
         List<List<ExpoPushMessage>> chunks = client.chunkPushNotifications(messages);
-        long totalMessageCount = _coundAndValidateMessages(chunks);
+        long totalMessageCount = _countAndValidateMessages(chunks);
         assertEquals(888 + 999 + 90 + 10, totalMessageCount);
     }
 
@@ -144,7 +134,7 @@ class PushClientTest {
         assertEquals(2, chunks.size());
         assertEquals(1, chunks.get(0).size());
         assertEquals(1, chunks.get(1).size());
-        long totalMessageCount = _coundAndValidateMessages(chunks);
+        long totalMessageCount = _countAndValidateMessages(chunks);
         assertEquals(101, totalMessageCount);
     }
 
@@ -161,7 +151,7 @@ class PushClientTest {
         assertEquals(2, chunks.size());
         assertEquals(2, chunks.get(0).size());
         assertEquals(1, chunks.get(1).size());
-        long totalMessageCount = _coundAndValidateMessages(chunks);
+        long totalMessageCount = _countAndValidateMessages(chunks);
         assertEquals(99 + 2, totalMessageCount);
     }
 
@@ -178,7 +168,7 @@ class PushClientTest {
         assertEquals(2, chunks.size());
         assertEquals(1, chunks.get(0).size());
         assertEquals(2, chunks.get(1).size());
-        long totalMessageCount = _coundAndValidateMessages(chunks);
+        long totalMessageCount = _countAndValidateMessages(chunks);
         assertEquals(100 + 2, totalMessageCount);
     }
 
@@ -194,7 +184,7 @@ class PushClientTest {
         assertEquals(2, chunks.size());
         assertEquals(100, chunks.get(0).size());
         assertEquals(1, chunks.get(1).size());
-        long totalMessageCount = _coundAndValidateMessages(chunks);
+        long totalMessageCount = _countAndValidateMessages(chunks);
         assertEquals(99 + 2, totalMessageCount);
     }
 
