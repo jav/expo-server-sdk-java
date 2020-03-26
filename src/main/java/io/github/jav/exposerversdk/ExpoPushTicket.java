@@ -83,4 +83,19 @@ public class ExpoPushTicket implements JsonSerializable {
             return error;
         }
     }
+
+    @Override
+    public boolean equals(Object _o) {
+        ExpoPushTicket o = (ExpoPushTicket) _o;
+        if (!o.id.equals(id))
+            return false;
+        if (!o.details.equals(details))
+            return false;
+        if (!o.message.equals(message))
+            return false;
+        if (!o.status.equals(status))
+            return false;
+
+            return true;
+    }
 }
