@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -58,6 +59,26 @@ public class ExpoPushTicket implements JsonSerializable {
         throw new UnsupportedOperationException("serializeWithType() not implemented.");
     }
 
+    @Override
+    public boolean equals(Object _o) {
+        if (_o == null)
+            return false;
+
+        if (_o == this)
+            return true;
+
+        if (_o.getClass() != getClass())
+            return false;
+
+        ExpoPushTicket o = (ExpoPushTicket) _o;
+        return new EqualsBuilder().
+                append(status, o.status).
+                append(id, o.id).
+                append(message, o.message).
+                append(details, o.details).
+                isEquals();
+    }
+
     public static class Details {
         private String error;
 
@@ -78,20 +99,23 @@ public class ExpoPushTicket implements JsonSerializable {
         public String getError() {
             return error;
         }
-    }
 
-    @Override
-    public boolean equals(Object _o) {
-        ExpoPushTicket o = (ExpoPushTicket) _o;
-        if (!o.id.equals(id))
-            return false;
-        if (!o.details.equals(details))
-            return false;
-        if (!o.message.equals(message))
-            return false;
-        if (!o.status.equals(status))
-            return false;
+        @Override
+        public boolean equals(Object _o) {
+            if (_o == null)
+                return false;
 
-            return true;
+            if (_o == this)
+                return true;
+
+            if (_o.getClass() != getClass())
+                return false;
+
+            Details o = (Details) _o;
+            return new EqualsBuilder().
+                    append(getError(), o.getError()).
+                    isEquals();
+        }
+
     }
 }
