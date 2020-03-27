@@ -6,8 +6,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -18,8 +16,6 @@ public class ExpoPushTicket implements JsonSerializable {
     public String id = null;
     public String message = null;
     public Details details = null;
-
-    Logger logger = LoggerFactory.getLogger(ExpoPushTicket.class);
 
     public ExpoPushTicket() {
     }
