@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -58,6 +59,26 @@ public class ExpoPushReceiept implements JsonSerializable {
         throw new UnsupportedOperationException("serializeWithType() not implemented.");
     }
 
+    @Override
+    public boolean equals(Object _o) {
+        if (_o == null)
+            return false;
+
+        if (_o == this)
+            return true;
+
+        if (_o.getClass() != getClass())
+            return false;
+
+        ExpoPushReceiept o = (ExpoPushReceiept) _o;
+        return new EqualsBuilder().
+                append(status, o.status).
+                append(id, o.id).
+                append(message, o.message).
+                append(details, o.details).
+                isEquals();
+    }
+
     public static class Details {
         private String error;
 
@@ -77,6 +98,23 @@ public class ExpoPushReceiept implements JsonSerializable {
 
         public String getError() {
             return error;
+        }
+
+        @Override
+        public boolean equals(Object _o) {
+            if (_o == null)
+                return false;
+
+            if (_o == this)
+                return true;
+
+            if (_o.getClass() != getClass())
+                return false;
+
+            ExpoPushReceiept.Details o = (ExpoPushReceiept.Details) _o;
+            return new EqualsBuilder().
+                    append(getError(), o.getError()).
+                    isEquals();
         }
     }
 }

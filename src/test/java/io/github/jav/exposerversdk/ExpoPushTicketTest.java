@@ -9,8 +9,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ExpoPushTicketTest {
 
@@ -29,7 +28,6 @@ class ExpoPushTicketTest {
             ept.details = new ExpoPushTicket.Details("MeSSATEExcEEded");
         });
     }
-
 
     @Test
     void jsonSerializesCorrectly() throws IOException {
@@ -88,6 +86,35 @@ class ExpoPushTicketTest {
         ept.details = new ExpoPushTicket.Details("MessageTooBig");
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
+    }
 
+
+    @Test
+    void equals() throws IOException {
+        ExpoPushTicket ept1;
+        ept1 = new ExpoPushTicket();
+        ExpoPushTicket ept2;
+        ept2 = new ExpoPushTicket();
+        assertEquals(ept1, ept2);
+
+        ept1.id = "1";
+        assertNotEquals(ept1, ept2);
+        ept2.id = "1";
+        assertEquals(ept1, ept2);
+
+        ept1.status = "error";
+        assertNotEquals(ept1, ept2);
+        ept2.status = "error";
+        assertEquals(ept1, ept2);
+
+        ept1.message = "message";
+        assertNotEquals(ept1, ept2);
+        ept2.message = "message";
+        assertEquals(ept1, ept2);
+
+        ept1.details = new ExpoPushTicket.Details("MessageTooBig");
+        assertNotEquals(ept1, ept2);
+        ept2.details = new ExpoPushTicket.Details("MessageTooBig");
+        assertEquals(ept1, ept2);
     }
 }

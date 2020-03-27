@@ -116,6 +116,5 @@ public class ExpoPushTicket implements JsonSerializable {
                     append(getError(), o.getError()).
                     isEquals();
         }
-
     }
 }
