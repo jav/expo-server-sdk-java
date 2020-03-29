@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.jav</groupId>
     <artifactId>expo-server-sdk</artifactId>
-    <version>0.4.6-SNAPSHOT</version>
+    <version>0.4.6</version>
     <name>expo-server-sdk</name>
     <description>
         Java implementation of expo-server-sdk implementation.
@@ -30,7 +29,7 @@
         <connection>scm:git:git://github.com/jav/expo-server-sdk-java.git</connection>
         <developerConnection>scm:git:git@github.com:jav/expo-server-sdk-java.git</developerConnection>
         <url>https://github.com/jav/expo-server-sdk-java</url>
-        <tag>HEAD</tag>
+        <tag>expo-server-sdk-0.4.6</tag>
     </scm>
     <build>
         <plugins>
