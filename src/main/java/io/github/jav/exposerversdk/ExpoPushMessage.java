@@ -49,7 +49,8 @@ public class ExpoPushMessage implements JsonSerializable {
     }
 
     public void setPriority(String _priority) {
-        if (!_priority.toLowerCase().equals("default") &&
+        if (null != _priority &&
+                !_priority.toLowerCase().equals("default") &&
                 !_priority.toLowerCase().equals("high") &&
                 !_priority.toLowerCase().equals("normal")
         )
