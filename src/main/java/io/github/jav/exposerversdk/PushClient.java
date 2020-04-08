@@ -15,7 +15,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class PushClient {
@@ -29,13 +31,13 @@ public class PushClient {
 
     public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<ExpoPushMessage> messages) {
         try {
-            return _postAsync(new URL(BASE_API_URL + "/push/send"), messages)
+            return _postNotificationAsync(new URL(BASE_API_URL + "/push/send"), messages)
                     .thenApply((String jsonString) -> {
                         try {
                             ObjectMapper mapper = new ObjectMapper();
                             JsonNode dataNode = mapper.readTree(jsonString).get("data");
                             List<ExpoPushTicket> retList = new ArrayList<>();
-                            for(JsonNode node : dataNode) {
+                            for (JsonNode node : dataNode) {
                                 retList.add(mapper.convertValue(node, ExpoPushTicket.class));
                             }
                             return retList;
@@ -54,12 +56,87 @@ public class PushClient {
         return null;
     }
 
-    private CompletableFuture<String> _postAsync(URL url, List<ExpoPushMessage> messages) throws URISyntaxException {
+    public CompletableFuture<List<ExpoPushReceiept>> getPushNotificationReceiptsAsync(List<String> _ids) {
+        try {
+            return _postReceiptsAsync(new URL(BASE_API_URL + "/push/getReceipts"), _ids)
+                    .thenApply((String jsonString) -> {
+                        try {
+                            ObjectMapper mapper = new ObjectMapper();
+                            JsonNode dataNode = mapper.readTree(jsonString).get("data");
+                            List<ExpoPushReceiept> retList = new ArrayList<>();
+                            Iterator<Map.Entry<String, JsonNode>> it = dataNode.fields();
+                            while (it.hasNext()) {
+                                Map.Entry<String, JsonNode> field = it.next();
+                                String key = field.getKey();
+
+                                ExpoPushReceiept epr = new ExpoPushReceiept();
+                                epr = mapper.convertValue(field.getValue(), ExpoPushReceiept.class);
+                                epr.id = key;
+                                retList.add(epr);
+                            }
+                            return retList;
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    });
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private <T> CompletableFuture<String> _postNotificationAsync(URL url, List<T> messages) throws URISyntaxException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = null;
+
         try {
-            json = objectMapper.writeValueAsString(messages);
+            json = objectMapper.
+                    writeValueAsString(messages);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        logger.info("json:" + json);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(url.toURI())
+                .timeout(Duration.ofMinutes(2))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        HttpClient client = HttpClient.newHttpClient();
+        logger.info("client: " + client);
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenApply(body -> {
+                    logger.info("responseBody is:" + body);
+                    return body;
+                });
+    }
+
+    private class JsonReceiptHelper<T> {
+        public List<T> ids;
+
+        public JsonReceiptHelper(List<T> _ids) {
+            ids = _ids;
+        }
+    }
+
+    private <T> CompletableFuture<String> _postReceiptsAsync(URL url, List<T> receipts) throws URISyntaxException {
+
+        JsonReceiptHelper<T> jsonReceiptHelper = new PushClient.JsonReceiptHelper<T>(receipts);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = null;
+
+        try {
+            json = objectMapper.
+                    writeValueAsString(jsonReceiptHelper);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
