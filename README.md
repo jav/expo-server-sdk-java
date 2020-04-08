@@ -1,3 +1,5 @@
+![Java CI with Maven](https://github.com/jav/expo-server-sdk-java/workflows/Java%20CI%20with%20Maven/badge.svg)
+
 ## expo-server-sdk-java
 This is a java implementation of the [node server-side library](https://github.com/expo/expo-server-sdk-node) for working with expo using Java.
 For other implementations, see [the expo docs](https://docs.expo.io/versions/latest/guides/push-notifications/#2-call-expos-push-api-with-the).
