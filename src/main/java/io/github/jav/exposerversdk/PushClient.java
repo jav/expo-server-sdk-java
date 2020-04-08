@@ -28,7 +28,6 @@ public class PushClient {
 
 
     public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<ExpoPushMessage> messages) {
-        long actualMessagesCount = PushClient._getActualMessagesCount(messages);
         try {
             return _postAsync(new URL(BASE_API_URL + "/push/send"), messages)
                     .thenApply((String jsonString) -> {
