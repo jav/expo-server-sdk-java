@@ -2,6 +2,7 @@ package io.github.jav.exposerversdk;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -87,6 +88,31 @@ class ExpoPushRecieptTest {
         ept.details = new ExpoPushTicket.Details("MessageTooBig");
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
+    }
+
+    @Test
+    void deserializesToJsonCorrectly() throws IOException {
+        final String SOURCE_JSON = " " +
+                "{" +
+                "    \"2011eb6d-d4d3-440c-a93c-37ac4b51ea09\": { " +
+                "        \"status\":\"error\"," +
+                "        \"message\":\"The Apple Push Notification service ...  this error means.\"," +
+                "        \"details\":{" +
+                "            \"apns\":{" +
+                "                \"reason\":\"PayloadTooLarge\", " +
+                "                \"statusCode\":413" +
+                "            }," +
+                "            \"error\":\"MessageTooBig\"," +
+                "            \"sentAt\":1586353449" +
+                "        }," +
+                "        \"__debug\": {}" +
+                "    }" +
+                "}";
+        ObjectMapper mapper = new ObjectMapper();
+        ExpoPushReceiept epr = mapper.readValue(SOURCE_JSON, ExpoPushReceiept.class);
+        assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", epr.id);
+        assertEquals("error", epr.status);
+        assertEquals("MessageTooBig", epr.details.getError());
     }
 
     @Test
