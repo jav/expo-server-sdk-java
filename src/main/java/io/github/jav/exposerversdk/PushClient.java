@@ -3,8 +3,6 @@ package io.github.jav.exposerversdk;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -25,9 +23,6 @@ public class PushClient {
     static public final long PUSH_NOTIFICATION_RECEIPT_CHUNK_LIMIT = 300;
     static public final String BASE_URL = "https://exp.host";
     static public final String BASE_API_URL = BASE_URL + "/--/api/v2";
-
-    Logger logger = LoggerFactory.getLogger(PushClient.class);
-
 
     public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<ExpoPushMessage> messages) {
         try {
@@ -102,7 +97,6 @@ public class PushClient {
             e.printStackTrace();
         }
 
-        logger.info("json:" + json);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url.toURI())
                 .timeout(Duration.ofMinutes(2))
@@ -110,11 +104,9 @@ public class PushClient {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
         HttpClient client = HttpClient.newHttpClient();
-        logger.info("client: " + client);
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
                 .thenApply(body -> {
-                    logger.info("responseBody is:" + body);
                     return body;
                 });
     }
@@ -141,7 +133,6 @@ public class PushClient {
             e.printStackTrace();
         }
 
-        logger.info("json:" + json);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url.toURI())
                 .timeout(Duration.ofMinutes(2))
@@ -149,11 +140,9 @@ public class PushClient {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
         HttpClient client = HttpClient.newHttpClient();
-        logger.info("client: " + client);
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
                 .thenApply(body -> {
-                    logger.info("responseBody is:" + body);
                     return body;
                 });
     }
