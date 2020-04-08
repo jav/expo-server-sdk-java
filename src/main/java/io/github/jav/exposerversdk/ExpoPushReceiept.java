@@ -26,11 +26,11 @@ public class ExpoPushReceiept implements JsonSerializable {
     ExpoPushReceiept(@JsonProperty("status") String _status,
                      @JsonProperty("id") String _id,
                      @JsonProperty("message") String _message,
-                     @JsonProperty("details") String _details) {
+                     @JsonProperty("details") String _detailsError) {
         status = _status;
         id = _id;
         message = _message;
-        details = new Details(_details);
+        details = new Details(_detailsError);
     }
 
     public Details getDetails() {

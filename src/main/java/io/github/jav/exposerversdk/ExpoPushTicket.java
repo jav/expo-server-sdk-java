@@ -26,11 +26,11 @@ public class ExpoPushTicket implements JsonSerializable {
     ExpoPushTicket(@JsonProperty("status") String _status,
                    @JsonProperty("id") String _id,
                    @JsonProperty("message") String _message,
-                   @JsonProperty("details.error") String _details) {
+                   @JsonProperty("details.error") String _detailsError) {
         status = _status;
         id = _id;
         message = _message;
-        details = new Details(_details);
+        details = new Details(_detailsError);
     }
 
     public Details getDetails() {
