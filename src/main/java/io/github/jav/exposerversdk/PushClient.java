@@ -63,9 +63,9 @@ public class PushClient {
                             while (it.hasNext()) {
                                 Map.Entry<String, JsonNode> field = it.next();
                                 String key = field.getKey();
+                                JsonNode expoPushRecieptJsonNode = field.getValue();
+                                ExpoPushReceiept epr = mapper.treeToValue(expoPushRecieptJsonNode, ExpoPushReceiept.class);
 
-                                ExpoPushReceiept epr = new ExpoPushReceiept();
-                                epr = mapper.convertValue(field.getValue(), ExpoPushReceiept.class);
                                 epr.id = key;
                                 retList.add(epr);
                             }

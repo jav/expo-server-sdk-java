@@ -2,34 +2,20 @@ package io.github.jav.exposerversdk;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Iterator;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class ExpoPushRecieptTest {
-    @Test
-    void DetailErrorMayOnlyBeDeviceNotRegisteredInvalidCredentialsMessageTooBigOrMessageRateExceeded() {
-        ExpoPushTicket ept = new ExpoPushTicket();
-        String[] errorDetailsKeys = new String[]{"DeviceNotRegistered", "InvalidCredentials", "MessageTooBig", "MessageRateExceeded"};
-
-        ept.details = new ExpoPushTicket.Details(null);
-        ept.details = new ExpoPushTicket.Details("DeviceNotRegistered");
-        ept.details = new ExpoPushTicket.Details("InvalidCredentials");
-        ept.details = new ExpoPushTicket.Details("MessageTooBig");
-        ept.details = new ExpoPushTicket.Details("MessageRateExceeded");
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            ept.details = new ExpoPushTicket.Details("MeSSATEExcEEded");
-        });
-    }
-
-
     @Test
     void jsonSerializesCorrectly() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -108,10 +94,14 @@ class ExpoPushRecieptTest {
                 "    }" +
                 "}";
         ObjectMapper mapper = new ObjectMapper();
-        ExpoPushReceiept epr = mapper.readValue(SOURCE_JSON, ExpoPushReceiept.class);
+
+        JsonNode dataNode = mapper.readTree(SOURCE_JSON).get("2011eb6d-d4d3-440c-a93c-37ac4b51ea09");
+        ExpoPushReceiept epr = mapper.treeToValue(dataNode, ExpoPushReceiept.class);
+        epr.id = "2011eb6d-d4d3-440c-a93c-37ac4b51ea09";
+
         assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", epr.id);
-        assertEquals("error", epr.status);
-        assertEquals("MessageTooBig", epr.details.getError());
+        assertEquals("error", epr.getStatus());
+        assertEquals("MessageTooBig", epr.getDetails().getError());
     }
 
     @Test
@@ -127,19 +117,19 @@ class ExpoPushRecieptTest {
         epr2.id = "1";
         assertEquals(epr1, epr2);
 
-        epr1.status = "error";
+        epr1.setStatus("error");
         assertNotEquals(epr1, epr2);
-        epr2.status = "error";
+        epr2.setStatus("error");
         assertEquals(epr1, epr2);
 
-        epr1.message = "message";
+        epr1.setMessage("message");
         assertNotEquals(epr1, epr2);
-        epr2.message = "message";
+        epr2.setMessage("message");
         assertEquals(epr1, epr2);
 
-        epr1.details = new ExpoPushReceiept.Details("MessageTooBig");
+        epr1.setDetails((new ExpoPushReceiept.Details()).setError("MessageTooBig"));
         assertNotEquals(epr1, epr2);
-        epr2.details = new ExpoPushReceiept.Details("MessageTooBig");
+        epr2.setDetails((new ExpoPushReceiept.Details()).setError("MessageTooBig"));
         assertEquals(epr1, epr2);
     }
 }

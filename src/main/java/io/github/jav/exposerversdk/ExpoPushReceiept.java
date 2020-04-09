@@ -1,7 +1,6 @@
 package io.github.jav.exposerversdk;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -9,33 +8,65 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"_debug"})
 public class ExpoPushReceiept implements JsonSerializable {
-    public String status = null;
+
+    @JsonProperty("id")
     public String id = null;
-    public String message = null;
-    public Details details = null;
+    @JsonProperty("status")
+    private String status = null;
+    @JsonProperty("message")
+    private String message = null;
+    @JsonProperty("details")
+    private Details details = null;
 
-    public ExpoPushReceiept() {
+    @JsonIgnore
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    @JsonProperty("status")
+    public String getStatus() {
+        return status;
     }
 
-
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    ExpoPushReceiept(@JsonProperty("status") String _status,
-                     @JsonProperty("id") String _id,
-                     @JsonProperty("message") String _message,
-                     @JsonProperty("details") String _detailsError) {
-        status = _status;
-        id = _id;
-        message = _message;
-        details = new Details(_detailsError);
+    @JsonProperty("status")
+    public void setStatus(String status) {
+        this.status = status;
     }
 
+    @JsonProperty("message")
+    public String getMessage() {
+        return message;
+    }
+
+    @JsonProperty("message")
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    @JsonProperty("details")
     public Details getDetails() {
         return details;
     }
+
+    @JsonProperty("details")
+    public void setDetails(Details details) {
+        this.details = details;
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
+
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+    }
+
 
     @Override
     public void serialize(JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
@@ -79,25 +110,45 @@ public class ExpoPushReceiept implements JsonSerializable {
                 isEquals();
     }
 
+    @JsonIgnoreProperties({"apns", "fcm"})
     public static class Details {
+
+        @JsonProperty("error")
         private String error;
+        @JsonProperty("sentAt")
+        private Integer sentAt;
+        @JsonIgnore
+        private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-        public Details(String _error) {
-            setError(_error);
-        }
-
-        public void setError(String _error) {
-            String[] errorDetailsKeys = new String[]{"DeviceNotRegistered", "InvalidCredentials",
-                    "MessageTooBig", "MessageRateExceeded"};
-            List<String> errorDetailsKeysList = Arrays.asList(errorDetailsKeys);
-            if (_error != null && !errorDetailsKeysList.contains(_error)) {
-                throw new IllegalArgumentException("Member \"details\" but be one of :" + errorDetailsKeys);
-            }
-            error = _error;
-        }
-
+        @JsonProperty("error")
         public String getError() {
             return error;
+        }
+
+        @JsonProperty("error")
+        public Details setError(String error) {
+            this.error = error;
+            return this;
+        }
+
+        @JsonProperty("sentAt")
+        public Integer getSentAt() {
+            return sentAt;
+        }
+
+        @JsonProperty("sentAt")
+        public void setSentAt(Integer sentAt) {
+            this.sentAt = sentAt;
+        }
+
+        @JsonAnyGetter
+        public Map<String, Object> getAdditionalProperties() {
+            return this.additionalProperties;
+        }
+
+        @JsonAnySetter
+        public void setAdditionalProperty(String name, Object value) {
+            this.additionalProperties.put(name, value);
         }
 
         @Override
