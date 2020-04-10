@@ -4,7 +4,7 @@
 
     <groupId>io.github.jav</groupId>
     <artifactId>expo-server-sdk</artifactId>
-    <version>0.5.2</version>
+    <version>0.5.3-SNAPSHOT</version>
     <name>expo-server-sdk</name>
     <description>
         Java implementation of expo-server-sdk implementation.
@@ -29,7 +29,7 @@
         <connection>scm:git:git://github.com/jav/expo-server-sdk-java.git</connection>
         <developerConnection>scm:git:git@github.com:jav/expo-server-sdk-java.git</developerConnection>
         <url>https://github.com/jav/expo-server-sdk-java</url>
-        <tag>expo-server-sdk-0.5.2</tag>
+        <tag>HEAD</tag>
     </scm>
     <build>
         <plugins>
