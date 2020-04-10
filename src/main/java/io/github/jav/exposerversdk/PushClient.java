@@ -27,11 +27,11 @@ public class PushClient {
     public HttpResponse httpResponse = null;
 
 
-    PushClient() {
+    public PushClient() {
         httpClient = HttpClient.newHttpClient();
     }
 
-    PushClient(HttpClient _httpClient) {
+    public PushClient(HttpClient _httpClient) {
         httpClient = _httpClient;
     }
 
