@@ -62,7 +62,7 @@ public class Main {
 <dependency>
   <groupId>io.github.jav</groupId>
   <artifactId>expo-server-sdk</artifactId>
-  <version>0.4.11</version>
+  <version>0.5.1</version>
 </dependency>
 ```
 ## Gradle
