@@ -23,6 +23,17 @@ public class PushClient {
     static public final long PUSH_NOTIFICATION_RECEIPT_CHUNK_LIMIT = 300;
     static public final String BASE_URL = "https://exp.host";
     static public final String BASE_API_URL = BASE_URL + "/--/api/v2";
+    public HttpClient httpClient = null;
+    public HttpResponse httpResponse = null;
+
+
+    PushClient() {
+        httpClient = HttpClient.newHttpClient();
+    }
+
+    PushClient(HttpClient _httpClient) {
+        httpClient = _httpClient;
+    }
 
     public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<ExpoPushMessage> messages) {
         try {
@@ -103,8 +114,7 @@ public class PushClient {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        HttpClient client = HttpClient.newHttpClient();
-        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
                 .thenApply(body -> {
                     return body;
@@ -139,8 +149,7 @@ public class PushClient {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        HttpClient client = HttpClient.newHttpClient();
-        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
                 .thenApply(body -> {
                     return body;

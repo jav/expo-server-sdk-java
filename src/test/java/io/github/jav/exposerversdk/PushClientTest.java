@@ -2,12 +2,19 @@ package io.github.jav.exposerversdk;
 
 import org.junit.jupiter.api.Test;
 
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.mockito.Mockito.*;
 
 class PushClientTest {
 
@@ -214,5 +221,51 @@ class PushClientTest {
         }
         return totalMessageCount;
 
+    }
+
+    @Test
+    public void getOneReceipt() throws InterruptedException, ExecutionException {
+        final String SOURCE_JSON = "{" +
+                "    \"data\": " +
+                "    {" +
+                "        \"2011eb6d-d4d3-440c-a93c-37ac4b51ea09\": { " +
+                "            \"status\":\"error\"," +
+                "            \"message\":\"The Apple Push Notification service ...  this error means.\"," +
+                "            \"details\":{" +
+                "                \"apns\":{" +
+                "                    \"reason\":\"PayloadTooLarge\", " +
+                "                    \"statusCode\":413" +
+                "                }," +
+                "                \"error\":\"MessageTooBig\"," +
+                "                \"sentAt\":1586353449" +
+                "            }," +
+                "            \"__debug\": {}" +
+                "        }" +
+                "    }" +
+                "}";
+        HttpResponse<Object> httpResponseMock = mock(HttpResponse.class);
+        when(httpResponseMock.body()).thenReturn(SOURCE_JSON);
+
+
+        HttpClient httpClientMock = mock(HttpClient.class);
+        CompletableFuture<HttpResponse<Object>> mockResponseFuture = new CompletableFuture<>().completedFuture(httpResponseMock);
+
+        when(httpClientMock.sendAsync(any(), any())).thenReturn(mockResponseFuture);
+
+
+        PushClient client = new PushClient(httpClientMock);
+
+        List<CompletableFuture<List<ExpoPushReceiept>>> messageRepliesFutures = new ArrayList<>();
+        List<List<String>> receiptIdChunks = client.chunkPushNotificationReceiptIds(Arrays.asList("2011eb6d-d4d3-440c-a93c-37ac4b51ea09"));
+        for (List<String> chunk : receiptIdChunks) {
+            messageRepliesFutures.add(client.getPushNotificationReceiptsAsync(chunk));
+        }
+
+        ExpoPushReceiept receipt = messageRepliesFutures.get(0).get().get(0);
+        assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", receipt.id);
+        assertEquals("error", receipt.getStatus());
+        assertTrue(receipt.getMessage().startsWith("The Apple Push"));
+        assertTrue(receipt.getMessage().endsWith("this error means."));
+        assertEquals("MessageTooBig", receipt.getDetails().getError());
     }
 }
