@@ -14,22 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ExpoPushTicketTest {
 
     @Test
-    void DetailErrorMayOnlyBeDeviceNotRegisteredInvalidCredentialsMessageTooBigOrMessageRateExceeded() {
-        ExpoPushTicket ept = new ExpoPushTicket();
-        String[] errorDetailsKeys = new String[]{"DeviceNotRegistered", "InvalidCredentials", "MessageTooBig", "MessageRateExceeded"};
-
-        ept.details = new ExpoPushTicket.Details(null);
-        ept.details = new ExpoPushTicket.Details("DeviceNotRegistered");
-        ept.details = new ExpoPushTicket.Details("InvalidCredentials");
-        ept.details = new ExpoPushTicket.Details("MessageTooBig");
-        ept.details = new ExpoPushTicket.Details("MessageRateExceeded");
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            ept.details = new ExpoPushTicket.Details("MeSSATEExcEEded");
-        });
-    }
-
-    @Test
     void jsonSerializesCorrectly() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonFactory factory = new JsonFactory();
@@ -62,7 +46,7 @@ class ExpoPushTicketTest {
         generator.close();
         jsonControl = writer.toString();
         ept = new ExpoPushTicket();
-        ept.status = "ok";
+        ept.setStatus("ok");
         ept.id = "123";
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
@@ -75,15 +59,17 @@ class ExpoPushTicketTest {
         generator.writeStringField("message", "message");
         generator.writeObjectFieldStart("details");
         generator.writeStringField("error", "MessageTooBig");
+        generator.writeNumberField("sentAt", 123);
         generator.writeEndObject();
         generator.writeStringField("message", "message");
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
         ept = new ExpoPushTicket();
-        ept.status = "error";
-        ept.message = "message";
-        ept.details = new ExpoPushTicket.Details("MessageTooBig");
+        ept.setStatus("error");
+        ept.setMessage("message");
+
+        ept.setDetails(new ExpoPushTicket.Details().setError("MessageTooBig").setSentAt(123));
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
     }
@@ -102,19 +88,19 @@ class ExpoPushTicketTest {
         ept2.id = "1";
         assertEquals(ept1, ept2);
 
-        ept1.status = "error";
+        ept1.setStatus("error");
         assertNotEquals(ept1, ept2);
-        ept2.status = "error";
+        ept2.setStatus("error");
         assertEquals(ept1, ept2);
 
-        ept1.message = "message";
+        ept1.setMessage("message");
         assertNotEquals(ept1, ept2);
-        ept2.message = "message";
+        ept2.setMessage("message");
         assertEquals(ept1, ept2);
 
-        ept1.details = new ExpoPushTicket.Details("MessageTooBig");
+        ept1.setDetails(new ExpoPushTicket.Details().setError("MessageTooBig"));
         assertNotEquals(ept1, ept2);
-        ept2.details = new ExpoPushTicket.Details("MessageTooBig");
+        ept2.setDetails(new ExpoPushTicket.Details().setError("MessageTooBig"));
         assertEquals(ept1, ept2);
     }
 }
