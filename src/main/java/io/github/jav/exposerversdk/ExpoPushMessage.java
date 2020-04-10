@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class ExpoPushMessage implements JsonSerializable {
-
     public List<String> to = null;
     public Map<String, String> data = null;
     public String title = null;
@@ -46,6 +45,87 @@ public class ExpoPushMessage implements JsonSerializable {
 
     public ExpoPushMessage(String _to) {
         to = Arrays.asList(_to);
+    }
+
+
+    public List<String> getTo() {
+        return to;
+    }
+
+    public void setTo(List<String> to) {
+        this.to = to;
+    }
+
+    public Map<String, String> getData() {
+        return data;
+    }
+
+    public void setData(Map<String, String> data) {
+        this.data = data;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public ExpoMessageSound getSound() {
+        return sound;
+    }
+
+    public void setSound(ExpoMessageSound sound) {
+        this.sound = sound;
+    }
+
+    public long getTtl() {
+        return ttl;
+    }
+
+    public void setTtl(long ttl) {
+        this.ttl = ttl;
+    }
+
+    public long getExpiration() {
+        return expiration;
+    }
+
+    public void setExpiration(long expiration) {
+        this.expiration = expiration;
+    }
+
+    public long getBadge() {
+        return badge;
+    }
+
+    public void setBadge(long badge) {
+        this.badge = badge;
+    }
+
+    public String getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
     }
 
     public void setPriority(String _priority) {
