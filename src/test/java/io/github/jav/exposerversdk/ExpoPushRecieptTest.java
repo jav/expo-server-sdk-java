@@ -49,7 +49,7 @@ class ExpoPushRecieptTest {
         generator.close();
         jsonControl = writer.toString();
         ept = new ExpoPushTicket();
-        ept.status = "ok";
+        ept.setStatus("ok");
         ept.id = "123";
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
@@ -68,9 +68,9 @@ class ExpoPushRecieptTest {
         generator.close();
         jsonControl = writer.toString();
         ept = new ExpoPushTicket();
-        ept.status = "error";
-        ept.message = "message";
-        ept.details = new ExpoPushTicket.Details("MessageTooBig");
+        ept.setStatus("error");
+        ept.setMessage("message");
+        ept.setDetails( new ExpoPushTicket.Details().setError("MessageTooBig"));
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
     }
