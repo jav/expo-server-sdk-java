@@ -62,11 +62,11 @@ public class Main {
 <dependency>
   <groupId>io.github.jav</groupId>
   <artifactId>expo-server-sdk</artifactId>
-  <version>0.5.1</version>
+  <version>0.5.2</version>
 </dependency>
 ```
 ## Gradle
-`implementation 'io.github.jav:expo-server-sdk:0.4.7'`
+`implementation 'io.github.jav:expo-server-sdk:0.5.2'`
 
 ## Maven central entry
 https://search.maven.org/artifact/io.github.jav/expo-server-sdk
