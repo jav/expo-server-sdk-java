@@ -1,5 +1,8 @@
 package io.github.jav.exposerversdk;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -8,17 +11,31 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import java.io.IOException;
 import java.util.*;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"_debug"})
 public class ExpoPushMessage implements JsonSerializable {
+
+    @JsonProperty("to")
     public List<String> to = null;
+    @JsonProperty("data")
     public Map<String, String> data = null;
+    @JsonProperty("title")
     public String title = null;
+    @JsonProperty("subtitle")
     public String subtitle = null;
+    @JsonProperty("body")
     public String body = null;
+    @JsonProperty("sound")
     public ExpoMessageSound sound = null;
+    @JsonProperty("ttl")
     public long ttl = -1;
+    @JsonProperty("expiration")
     public long expiration = -1;
+    @JsonProperty("priority")
     private String priority = null;
+    @JsonProperty("badge")
     public long badge = -1;
+    @JsonProperty("channelId")
     public String channelId = null;
 
     public ExpoPushMessage() {
@@ -47,87 +64,107 @@ public class ExpoPushMessage implements JsonSerializable {
         to = Arrays.asList(_to);
     }
 
-
+    @JsonProperty("to")
     public List<String> getTo() {
         return to;
     }
 
+    @JsonProperty("to")
     public void setTo(List<String> to) {
         this.to = to;
     }
 
+    @JsonProperty("data")
     public Map<String, String> getData() {
         return data;
     }
 
+    @JsonProperty("data")
     public void setData(Map<String, String> data) {
         this.data = data;
     }
 
+    @JsonProperty("title")
     public String getTitle() {
         return title;
     }
 
+    @JsonProperty("title")
     public void setTitle(String title) {
         this.title = title;
     }
 
+    @JsonProperty("subtitle")
     public String getSubtitle() {
         return subtitle;
     }
 
+    @JsonProperty("subtitle")
     public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
     }
 
+    @JsonProperty("body")
     public String getBody() {
         return body;
     }
 
+    @JsonProperty("body")
     public void setBody(String body) {
         this.body = body;
     }
 
+    @JsonProperty("sound")
     public ExpoMessageSound getSound() {
         return sound;
     }
 
+    @JsonProperty("sound")
     public void setSound(ExpoMessageSound sound) {
         this.sound = sound;
     }
 
+    @JsonProperty("ttl")
     public long getTtl() {
         return ttl;
     }
 
+    @JsonProperty("ttl")
     public void setTtl(long ttl) {
         this.ttl = ttl;
     }
 
+    @JsonProperty("expiration")
     public long getExpiration() {
         return expiration;
     }
 
+    @JsonProperty("expiration")
     public void setExpiration(long expiration) {
         this.expiration = expiration;
     }
 
+    @JsonProperty("badge")
     public long getBadge() {
         return badge;
     }
 
+    @JsonProperty("badge")
     public void setBadge(long badge) {
         this.badge = badge;
     }
 
+    @JsonProperty("channelId")
     public String getChannelId() {
         return channelId;
     }
 
+    @JsonProperty("channelId")
     public void setChannelId(String channelId) {
         this.channelId = channelId;
     }
 
+    @JsonProperty("priority")
     public void setPriority(String _priority) {
         if (null != _priority &&
                 !_priority.toLowerCase().equals("default") &&
@@ -138,6 +175,7 @@ public class ExpoPushMessage implements JsonSerializable {
         priority = _priority;
     }
 
+    @JsonProperty("priority")
     public String getPriority() {
         return priority;
     }
