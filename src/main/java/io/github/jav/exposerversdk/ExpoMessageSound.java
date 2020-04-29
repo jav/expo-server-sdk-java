@@ -15,16 +15,16 @@ public class ExpoMessageSound implements JsonSerializable {
     private String name = null;
     private long volume = -1;
 
-    ExpoMessageSound() {
+    public ExpoMessageSound() {
     }
 
-    ExpoMessageSound(String _name) {
+    public ExpoMessageSound(String _name) {
         if (_name != null && !_name.equals("default"))
             throw new IllegalArgumentException();
         name = _name.toLowerCase();
     }
 
-    ExpoMessageSound(Boolean _critical, String _name, long _volume) {
+    public ExpoMessageSound(Boolean _critical, String _name, long _volume) {
         critical = _critical;
         name = _name;
         volume = _volume;
