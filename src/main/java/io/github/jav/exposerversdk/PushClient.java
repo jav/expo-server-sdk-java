@@ -21,8 +21,7 @@ import java.util.concurrent.CompletableFuture;
 public class PushClient {
     static public final long PUSH_NOTIFICATION_CHUNK_LIMIT = 100;
     static public final long PUSH_NOTIFICATION_RECEIPT_CHUNK_LIMIT = 300;
-    static public final String BASE_URL = "https://exp.host";
-    static public final String BASE_API_URL = BASE_URL + "/--/api/v2";
+    static public String baseApiUrl = "https://exp.host/--/api/v2";
     public HttpClient httpClient = null;
     public HttpResponse httpResponse = null;
 
@@ -35,9 +34,23 @@ public class PushClient {
         httpClient = _httpClient;
     }
 
+    @Deprecated
+    public PushClient(String base_url_api) {
+        setBaseApiUrl(base_url_api);
+    }
+
+    public String getBaseApiUrl() {
+        return baseApiUrl;
+    }
+
+    public PushClient setBaseApiUrl(String baseApiUrl) {
+        PushClient.baseApiUrl = baseApiUrl;
+        return this;
+    }
+
     public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<ExpoPushMessage> messages) {
         try {
-            return _postNotificationAsync(new URL(BASE_API_URL + "/push/send"), messages)
+            return _postNotificationAsync(new URL(baseApiUrl + "/push/send"), messages)
                     .thenApply((String jsonString) -> {
                         try {
                             ObjectMapper mapper = new ObjectMapper();
@@ -64,7 +77,7 @@ public class PushClient {
 
     public CompletableFuture<List<ExpoPushReceiept>> getPushNotificationReceiptsAsync(List<String> _ids) {
         try {
-            return _postReceiptsAsync(new URL(BASE_API_URL + "/push/getReceipts"), _ids)
+            return _postReceiptsAsync(new URL(baseApiUrl + "/push/getReceipts"), _ids)
                     .thenApply((String jsonString) -> {
                         try {
                             ObjectMapper mapper = new ObjectMapper();
