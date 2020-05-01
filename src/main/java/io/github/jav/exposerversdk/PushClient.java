@@ -30,6 +30,7 @@ public class PushClient {
         httpClient = HttpClient.newHttpClient();
     }
 
+    @Deprecated
     public PushClient(HttpClient _httpClient) {
         httpClient = _httpClient;
     }
@@ -45,6 +46,15 @@ public class PushClient {
 
     public PushClient setBaseApiUrl(String baseApiUrl) {
         PushClient.baseApiUrl = baseApiUrl;
+        return this;
+    }
+
+    public HttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    public PushClient setHttpClient(HttpClient _httpClient) {
+        httpClient = _httpClient;
         return this;
     }
 
