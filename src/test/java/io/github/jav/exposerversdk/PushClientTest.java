@@ -263,7 +263,8 @@ class PushClientTest {
         when(httpClientMock.sendAsync(any(), any())).thenReturn(mockResponseFuture);
 
 
-        PushClient client = new PushClient(httpClientMock);
+        PushClient client = new PushClient();
+        client.setHttpClient(httpClientMock);
 
         List<CompletableFuture<List<ExpoPushReceiept>>> messageRepliesFutures = new ArrayList<>();
         List<List<String>> receiptIdChunks = client.chunkPushNotificationReceiptIds(Arrays.asList("2011eb6d-d4d3-440c-a93c-37ac4b51ea09"));
