@@ -8,10 +8,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,40 +17,23 @@ import java.util.concurrent.CompletableFuture;
 public class PushClient {
     static public final long PUSH_NOTIFICATION_CHUNK_LIMIT = 100;
     static public final long PUSH_NOTIFICATION_RECEIPT_CHUNK_LIMIT = 300;
-    static public String baseApiUrl = "https://exp.host/--/api/v2";
-    public HttpClient httpClient = null;
-    public HttpResponse httpResponse = null;
-
+    public URL baseApiUrl = null;
+    public PushServerResolver pushServerResolver = new DefaultPushServerResolver();
 
     public PushClient() {
-        httpClient = HttpClient.newHttpClient();
+        try {
+            baseApiUrl = new URL("https://exp.host/--/api/v2");
+        } catch (MalformedURLException e) {
+            //Will never fail
+        }
     }
 
-    @Deprecated
-    public PushClient(HttpClient _httpClient) {
-        httpClient = _httpClient;
-    }
-
-    @Deprecated
-    public PushClient(String base_url_api) {
-        setBaseApiUrl(base_url_api);
-    }
-
-    public String getBaseApiUrl() {
+    public URL getBaseApiUrl() {
         return baseApiUrl;
     }
 
-    public PushClient setBaseApiUrl(String baseApiUrl) {
-        PushClient.baseApiUrl = baseApiUrl;
-        return this;
-    }
-
-    public HttpClient getHttpClient() {
-        return httpClient;
-    }
-
-    public PushClient setHttpClient(HttpClient _httpClient) {
-        httpClient = _httpClient;
+    public PushClient setBaseApiUrl(URL _baseApiUrl) {
+        baseApiUrl = _baseApiUrl;
         return this;
     }
 
@@ -77,8 +56,6 @@ public class PushClient {
                         }
                         return null;
                     });
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -119,8 +96,7 @@ public class PushClient {
         return null;
     }
 
-    private <T> CompletableFuture<String> _postNotificationAsync(URL url, List<T> messages) throws URISyntaxException {
-
+    protected <T> CompletableFuture<String> _postNotificationAsync(URL url, List<T> messages) {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = null;
 
@@ -130,30 +106,18 @@ public class PushClient {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(url.toURI())
-                .timeout(Duration.ofMinutes(2))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .thenApply(body -> {
-                    return body;
-                });
+        return pushServerResolver.postAsync(url, json);
     }
+
 
     private class JsonReceiptHelper<T> {
         public List<T> ids;
-
         public JsonReceiptHelper(List<T> _ids) {
             ids = _ids;
         }
     }
 
     private <T> CompletableFuture<String> _postReceiptsAsync(URL url, List<T> receipts) throws URISyntaxException {
-
         JsonReceiptHelper<T> jsonReceiptHelper = new PushClient.JsonReceiptHelper<T>(receipts);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -165,18 +129,7 @@ public class PushClient {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(url.toURI())
-                .timeout(Duration.ofMinutes(2))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .thenApply(body -> {
-                    return body;
-                });
+        return pushServerResolver.postAsync(url, json);
     }
 
     static public boolean isExponentPushToken(String token) {

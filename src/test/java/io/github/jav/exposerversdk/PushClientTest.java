@@ -2,8 +2,11 @@ package io.github.jav.exposerversdk;
 
 import org.junit.jupiter.api.Test;
 
-import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
+import java.io.ByteArrayInputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,11 +22,11 @@ import static org.mockito.Mockito.*;
 class PushClientTest {
 
     @Test
-    public void apiBaseUrlIsOverridable() {
+    public void apiBaseUrlIsOverridable() throws MalformedURLException {
         PushClient client = new PushClient();
-        String apiUrl = client.getBaseApiUrl();
+        URL apiUrl = client.getBaseApiUrl();
         assertEquals(apiUrl, client.getBaseApiUrl());
-        String mockBaseApiUrl = "mockString";
+        URL mockBaseApiUrl = new URL("http://example.com/");
         client.setBaseApiUrl(mockBaseApiUrl);
         assertEquals(mockBaseApiUrl, client.getBaseApiUrl());
     }
@@ -253,18 +256,15 @@ class PushClientTest {
                 "        }" +
                 "    }" +
                 "}";
-        HttpResponse<Object> httpResponseMock = mock(HttpResponse.class);
-        when(httpResponseMock.body()).thenReturn(SOURCE_JSON);
 
 
-        HttpClient httpClientMock = mock(HttpClient.class);
-        CompletableFuture<HttpResponse<Object>> mockResponseFuture = new CompletableFuture<>().completedFuture(httpResponseMock);
+        CompletableFuture<String> mockResponseFuture = new CompletableFuture<>().completedFuture(SOURCE_JSON);
 
-        when(httpClientMock.sendAsync(any(), any())).thenReturn(mockResponseFuture);
-
+        PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);
+        when(pushServerResolverMock.postAsync(any(), any())).thenReturn(mockResponseFuture);
 
         PushClient client = new PushClient();
-        client.setHttpClient(httpClientMock);
+        client.pushServerResolver = pushServerResolverMock;
 
         List<CompletableFuture<List<ExpoPushReceiept>>> messageRepliesFutures = new ArrayList<>();
         List<List<String>> receiptIdChunks = client.chunkPushNotificationReceiptIds(Arrays.asList("2011eb6d-d4d3-440c-a93c-37ac4b51ea09"));
