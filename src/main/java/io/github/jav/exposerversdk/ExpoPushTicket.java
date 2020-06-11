@@ -19,7 +19,7 @@ public class ExpoPushTicket implements JsonSerializable {
     @JsonProperty("id")
     public String id = null;
     @JsonProperty("status")
-    private String status = null;
+    private Status status = null;
     @JsonProperty("message")
     private String message = null;
     @JsonProperty("details")
@@ -29,12 +29,12 @@ public class ExpoPushTicket implements JsonSerializable {
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("status")
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
     @JsonProperty("status")
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -71,9 +71,9 @@ public class ExpoPushTicket implements JsonSerializable {
     @Override
     public void serialize(JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("status", status);
+        jsonGenerator.writeStringField("status", status == null ? null : status.toString());
         if (status != null) {
-            if (status.equals("ok")) {
+            if (status == Status.OK) {
                 jsonGenerator.writeStringField("id", id);
 
             } else {
