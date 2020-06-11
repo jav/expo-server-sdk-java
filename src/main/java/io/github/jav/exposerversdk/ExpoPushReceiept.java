@@ -116,6 +116,7 @@ public class ExpoPushReceiept implements JsonSerializable {
         return Objects.hash(id, getStatus(), getMessage(), getDetails(), getAdditionalProperties());
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties({"apns", "fcm"})
     public static class Details {
 
