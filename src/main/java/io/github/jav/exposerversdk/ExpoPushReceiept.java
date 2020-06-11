@@ -10,6 +10,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"_debug"})
@@ -110,6 +111,11 @@ public class ExpoPushReceiept implements JsonSerializable {
                 isEquals();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, getStatus(), getMessage(), getDetails(), getAdditionalProperties());
+    }
+
     @JsonIgnoreProperties({"apns", "fcm"})
     public static class Details {
 
@@ -152,20 +158,18 @@ public class ExpoPushReceiept implements JsonSerializable {
         }
 
         @Override
-        public boolean equals(Object _o) {
-            if (_o == null)
-                return false;
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Details)) return false;
+            Details details = (Details) o;
+            return Objects.equals(getError(), details.getError()) &&
+                    Objects.equals(getSentAt(), details.getSentAt()) &&
+                    Objects.equals(getAdditionalProperties(), details.getAdditionalProperties());
+        }
 
-            if (_o == this)
-                return true;
-
-            if (_o.getClass() != getClass())
-                return false;
-
-            ExpoPushReceiept.Details o = (ExpoPushReceiept.Details) _o;
-            return new EqualsBuilder().
-                    append(getError(), o.getError()).
-                    isEquals();
+        @Override
+        public int hashCode() {
+            return Objects.hash(getError(), getSentAt(), getAdditionalProperties());
         }
     }
 }
