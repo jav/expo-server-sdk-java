@@ -14,6 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ExpoPushMessageTest {
+
+    @Test
+    void testHashcodeImplementation() {
+        ExpoPushMessage a = new ExpoPushMessage();
+        ExpoPushMessage b = new ExpoPushMessage();
+        assertEquals(a, b);
+    }
     @Test
     void priorityMayOnlyBeDefaultNormalOrHigh() {
         ExpoPushMessage eps = new ExpoPushMessage();
