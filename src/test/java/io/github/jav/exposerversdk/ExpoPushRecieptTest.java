@@ -9,13 +9,38 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class ExpoPushRecieptTest {
+    @Test
+    void testHashcodeImplementation() {
+        ExpoPushReceiept a = new ExpoPushReceiept();
+        ExpoPushReceiept b = new ExpoPushReceiept();
+        assertEquals(a, b);
+
+        // check equals self, as in issue https://github.com/jav/expo-server-sdk-java/issues/6
+        assertEquals(a, a);
+
+        a.setDetails(new ExpoPushReceiept.Details());
+        assertNotEquals(a, b);
+        b.setDetails(new ExpoPushReceiept.Details());
+        assertEquals(a, b);
+
+        ExpoPushReceiept.Details detailsA = a.getDetails();
+        detailsA.setAdditionalProperty("foo", "bar");
+        assertNotEquals(a, b);
+        ExpoPushReceiept.Details detailsB = b.getDetails();
+        detailsB.setAdditionalProperty("foo", "bar");
+        assertEquals(a, b);
+    }
+
+
     @Test
     void jsonSerializesCorrectly() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
