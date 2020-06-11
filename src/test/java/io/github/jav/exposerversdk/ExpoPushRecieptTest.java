@@ -49,7 +49,7 @@ class ExpoPushRecieptTest {
         JsonGenerator generator = null;
         String emsJson = null;
         String jsonControl = null;
-        ExpoPushTicket ept = null;
+        ExpoPushReceiept ept = null;
 
         // Empty object
         writer = new StringWriter();
@@ -59,7 +59,7 @@ class ExpoPushRecieptTest {
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
-        ept = new ExpoPushTicket();
+        ept = new ExpoPushReceiept();
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
 
@@ -73,7 +73,7 @@ class ExpoPushRecieptTest {
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
-        ept = new ExpoPushTicket();
+        ept = new ExpoPushReceiept();
         ept.setStatus("ok");
         ept.id = "123";
         emsJson = mapper.writeValueAsString(ept);
@@ -92,10 +92,10 @@ class ExpoPushRecieptTest {
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
-        ept = new ExpoPushTicket();
+        ept = new ExpoPushReceiept();
         ept.setStatus("error");
         ept.setMessage("message");
-        ept.setDetails( new ExpoPushTicket.Details().setError("MessageTooBig"));
+        ept.setDetails( new ExpoPushReceiept.Details().setError("MessageTooBig"));
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
     }
