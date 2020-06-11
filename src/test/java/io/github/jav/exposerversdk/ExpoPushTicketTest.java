@@ -12,6 +12,27 @@ import java.io.Writer;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ExpoPushTicketTest {
+    @Test
+    void testHashcodeImplementation() {
+        ExpoPushTicket a = new ExpoPushTicket();
+        ExpoPushTicket b = new ExpoPushTicket();
+        assertEquals(a, b);
+
+        // check equals self, as in issue https://github.com/jav/expo-server-sdk-java/issues/6
+        assertEquals(a, a);
+
+        a.setDetails(new ExpoPushTicket.Details());
+        assertNotEquals(a, b);
+        b.setDetails(new ExpoPushTicket.Details());
+        assertEquals(a, b);
+
+        ExpoPushTicket.Details detailsA = a.getDetails();
+        detailsA.setAdditionalProperty("foo", "bar");
+        assertNotEquals(a, b);
+        ExpoPushTicket.Details detailsB = b.getDetails();
+        detailsB.setAdditionalProperty("foo", "bar");
+        assertEquals(a, b);
+    }
 
     @Test
     void jsonSerializesCorrectly() throws IOException {

@@ -10,6 +10,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"_debug"})
@@ -90,28 +91,24 @@ public class ExpoPushTicket implements JsonSerializable {
     }
 
     @Override
-    public boolean equals(Object _o) {
-        if (_o == null)
-            return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ExpoPushTicket)) return false;
+        ExpoPushTicket that = (ExpoPushTicket) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(getStatus(), that.getStatus()) &&
+                Objects.equals(getMessage(), that.getMessage()) &&
+                Objects.equals(getDetails(), that.getDetails()) &&
+                Objects.equals(getAdditionalProperties(), that.getAdditionalProperties());
+    }
 
-        if (_o == this)
-            return true;
-
-        if (_o.getClass() != getClass())
-            return false;
-
-        ExpoPushTicket o = (ExpoPushTicket) _o;
-        return new EqualsBuilder().
-                append(status, o.status).
-                append(id, o.id).
-                append(message, o.message).
-                append(details, o.details).
-                isEquals();
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, getStatus(), getMessage(), getDetails(), getAdditionalProperties());
     }
 
     @JsonIgnoreProperties({"apns", "fcm"})
     public static class Details {
-
         @JsonProperty("error")
         private String error;
         @JsonProperty("sentAt")
@@ -152,20 +149,18 @@ public class ExpoPushTicket implements JsonSerializable {
         }
 
         @Override
-        public boolean equals(Object _o) {
-            if (_o == null)
-                return false;
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Details)) return false;
+            Details details = (Details) o;
+            return Objects.equals(getError(), details.getError()) &&
+                    Objects.equals(getSentAt(), details.getSentAt()) &&
+                    Objects.equals(getAdditionalProperties(), details.getAdditionalProperties());
+        }
 
-            if (_o == this)
-                return true;
-
-            if (_o.getClass() != getClass())
-                return false;
-
-            ExpoPushTicket.Details o = (ExpoPushTicket.Details) _o;
-            return new EqualsBuilder().
-                    append(getError(), o.getError()).
-                    isEquals();
+        @Override
+        public int hashCode() {
+            return Objects.hash(getError(), getSentAt(), getAdditionalProperties());
         }
     }
 }
