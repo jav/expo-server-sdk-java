@@ -274,7 +274,7 @@ class PushClientTest {
 
         ExpoPushReceiept receipt = messageRepliesFutures.get(0).get().get(0);
         assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", receipt.id);
-        assertEquals("error", receipt.getStatus());
+        assertEquals(Status.ERROR, receipt.getStatus());
         assertTrue(receipt.getMessage().startsWith("The Apple Push"));
         assertTrue(receipt.getMessage().endsWith("this error means."));
         assertEquals("MessageTooBig", receipt.getDetails().getError());
