@@ -221,5 +221,29 @@ public class ExpoPushMessage implements JsonSerializable {
     public void serializeWithType(JsonGenerator jsonGenerator, SerializerProvider serializerProvider, TypeSerializer typeSerializer) throws IOException {
         throw new UnsupportedOperationException("serializeWithType() not implemented.");
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ExpoPushMessage)) return false;
+        ExpoPushMessage that = (ExpoPushMessage) o;
+        return getTtl() == that.getTtl() &&
+                getExpiration() == that.getExpiration() &&
+                getBadge() == that.getBadge() &&
+                Objects.equals(getTo(), that.getTo()) &&
+                Objects.equals(getData(), that.getData()) &&
+                Objects.equals(getTitle(), that.getTitle()) &&
+                Objects.equals(getSubtitle(), that.getSubtitle()) &&
+                Objects.equals(getBody(), that.getBody()) &&
+                Objects.equals(getSound(), that.getSound()) &&
+                Objects.equals(getPriority(), that.getPriority()) &&
+                Objects.equals(getChannelId(), that.getChannelId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTo(), getData(), getTitle(), getSubtitle(), getBody(), getSound(), getTtl(), getExpiration(), getPriority(), getBadge(), getChannelId());
+    }
 };
 

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class ExpoMessageSound implements JsonSerializable {
 
@@ -88,5 +89,20 @@ public class ExpoMessageSound implements JsonSerializable {
     @Override
     public void serializeWithType(JsonGenerator jsonGenerator, SerializerProvider serializerProvider, TypeSerializer typeSerializer) throws IOException {
         throw new UnsupportedOperationException("serializeWithType() not implemented.");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ExpoMessageSound)) return false;
+        ExpoMessageSound that = (ExpoMessageSound) o;
+        return getVolume() == that.getVolume() &&
+                Objects.equals(getCritical(), that.getCritical()) &&
+                Objects.equals(getName(), that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCritical(), getName(), getVolume());
     }
 }

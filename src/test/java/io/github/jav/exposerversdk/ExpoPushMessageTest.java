@@ -9,18 +9,50 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ExpoPushMessageTest {
 
     @Test
     void testHashcodeImplementation() {
+        List<String> recipientsA =Arrays.asList(new String[]{"recipient1", "recipient2"});
+        List<String> recipientsB =Arrays.asList(new String[]{"recipient1", "recipient2"});
+        String titleA = "title";
+        String titleB = "title";
+        ExpoMessageSound soundA = new ExpoMessageSound();
+        ExpoMessageSound soundB = new ExpoMessageSound();
+
         ExpoPushMessage a = new ExpoPushMessage();
         ExpoPushMessage b = new ExpoPushMessage();
         assertEquals(a, b);
+
+        // check equals self, as in issue https://github.com/jav/expo-server-sdk-java/issues/6
+        assertEquals(a, a);
+
+        a.setTo(recipientsA);
+        assertNotEquals(a, b);
+        b.setTo(recipientsB);
+        assertEquals(a, b);
+
+        a.setTitle(titleA);
+        assertNotEquals(a, b);
+        b.setTitle(titleB);
+        assertEquals(a, b);
+
+        a.setSound(soundA);
+        assertNotEquals(a, b);
+        b.setSound(soundB);
+        assertEquals(a, b);
+
+        soundA.setVolume(100);
+        assertNotEquals(a, b);
+        soundB.setVolume(100);
+        assertEquals(a, b);
     }
+
+
     @Test
     void priorityMayOnlyBeDefaultNormalOrHigh() {
         ExpoPushMessage eps = new ExpoPushMessage();
