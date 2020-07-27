@@ -12,13 +12,16 @@ import java.io.IOException;
 import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"_debug"})
-public class ExpoPushMessage implements JsonSerializable {
+@JsonIgnoreProperties({"_debug", "_clazz"})
+public class ExpoPushMessage<T> implements JsonSerializable {
 
+    //required for equality. If this is not a hard requirement, can remove
+    protected final Class<T> _clazz;
+    
     @JsonProperty("to")
     public List<String> to = null;
     @JsonProperty("data")
-    public Map<String, String> data = null;
+    public T data = null;
     @JsonProperty("title")
     public String title = null;
     @JsonProperty("subtitle")
@@ -38,11 +41,13 @@ public class ExpoPushMessage implements JsonSerializable {
     @JsonProperty("channelId")
     public String channelId = null;
 
-    public ExpoPushMessage() {
+    public ExpoPushMessage(Class<T> clazz) {
         to = new ArrayList<>();
+        this._clazz = clazz;
     }
 
-    public ExpoPushMessage(List<String> _to, ExpoPushMessage _message) {
+    public ExpoPushMessage(List<String> _to, ExpoPushMessage<T> _message) {
+        _clazz = _message._clazz;
         to = _to;
         data = _message.data;
         title = _message.title;
@@ -56,13 +61,16 @@ public class ExpoPushMessage implements JsonSerializable {
         channelId = _message.channelId;
     }
 
-    public ExpoPushMessage(List<String> _to) {
+    public ExpoPushMessage(List<String> _to, Class<T> clazz) {
+        _clazz = clazz;
         to = _to;
     }
 
-    public ExpoPushMessage(String _to) {
-        to = Arrays.asList(_to);
+    public ExpoPushMessage(String _to, Class<T> clazz) {
+        this (Arrays.asList(_to), clazz);
     }
+    
+
 
     @JsonProperty("to")
     public List<String> getTo() {
@@ -75,12 +83,12 @@ public class ExpoPushMessage implements JsonSerializable {
     }
 
     @JsonProperty("data")
-    public Map<String, String> getData() {
+    public T getData() {
         return data;
     }
 
     @JsonProperty("data")
-    public void setData(Map<String, String> data) {
+    public void setData(T data) {
         this.data = data;
     }
 
@@ -227,8 +235,10 @@ public class ExpoPushMessage implements JsonSerializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ExpoPushMessage)) return false;
-        ExpoPushMessage that = (ExpoPushMessage) o;
-        return getTtl() == that.getTtl() &&
+        @SuppressWarnings("unchecked")
+        ExpoPushMessage<T> that = (ExpoPushMessage<T>) o;
+        return _clazz.equals(that._clazz) &&
+                getTtl() == that.getTtl() &&
                 getExpiration() == that.getExpiration() &&
                 getBadge() == that.getBadge() &&
                 Objects.equals(getTo(), that.getTo()) &&
@@ -244,6 +254,10 @@ public class ExpoPushMessage implements JsonSerializable {
     @Override
     public int hashCode() {
         return Objects.hash(getTo(), getData(), getTitle(), getSubtitle(), getBody(), getSound(), getTtl(), getExpiration(), getPriority(), getBadge(), getChannelId());
+    }
+
+    public ExpoPushMessage<T> toChunk(List<String> partialTo) {
+        return new ExpoPushMessage<T>(partialTo, this);
     }
 };
 

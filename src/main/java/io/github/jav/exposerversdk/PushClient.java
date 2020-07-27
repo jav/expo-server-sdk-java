@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class PushClient {
+public class PushClient<Z extends ExpoPushMessage<?>> {
     static public final long PUSH_NOTIFICATION_CHUNK_LIMIT = 100;
     static public final long PUSH_NOTIFICATION_RECEIPT_CHUNK_LIMIT = 300;
     public URL baseApiUrl = null;
@@ -27,17 +27,17 @@ public class PushClient {
             //Will never fail
         }
     }
-
+    
+    public PushClient<Z> setBaseApiUrl(URL _baseApiUrl) {
+        baseApiUrl = _baseApiUrl;
+        return this;
+    }
+    
     public URL getBaseApiUrl() {
         return baseApiUrl;
     }
 
-    public PushClient setBaseApiUrl(URL _baseApiUrl) {
-        baseApiUrl = _baseApiUrl;
-        return this;
-    }
-
-    public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<ExpoPushMessage> messages) {
+    public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<Z> messages) {
         try {
             return _postNotificationAsync(new URL(baseApiUrl + "/push/send"), messages)
                     .thenApply((String jsonString) -> {
@@ -110,7 +110,8 @@ public class PushClient {
     }
 
 
-    private class JsonReceiptHelper<T> {
+    private static class JsonReceiptHelper<T> {
+        @SuppressWarnings("unused")
         public List<T> ids;
         public JsonReceiptHelper(List<T> _ids) {
             ids = _ids;
@@ -133,19 +134,17 @@ public class PushClient {
     }
 
     static public boolean isExponentPushToken(String token) {
-        String prefixA = "ExponentPushToken[";
-        String prefixB = "ExpoPushToken[";
-        String postfix = "]";
         String regex = "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
+        String regex2 = "ExponentPushToken\\[.+\\]";
+        String regex3 = "ExpoPushToken\\[.+\\]";
 
         if (token.matches(regex)) return true;
-        if (!token.endsWith(postfix)) return false;
-        if (token.startsWith(prefixA)) return true;
-        if (token.startsWith(prefixB)) return true;
+        if (token.matches(regex2)) return true;
+        if (token.matches(regex3)) return true;
         return false;
     }
 
-    public static long _getActualMessagesCount(List<ExpoPushMessage> messages) {
+    public static long _getActualMessagesCount(List<? extends ExpoPushMessage<?>> messages) {
         return messages.stream().reduce(0, (acc, cur) -> acc + cur.to.size(), Integer::sum);
     }
 
@@ -170,12 +169,13 @@ public class PushClient {
         return chunks;
     }
 
-    public List<List<ExpoPushMessage>> chunkPushNotifications(List<ExpoPushMessage> messages) {
-        List<List<ExpoPushMessage>> chunks = new ArrayList<>();
-        List<ExpoPushMessage> chunk = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    public List<List<Z>> chunkPushNotifications(List<Z> messages) {
+        List<List<Z>> chunks = new ArrayList<>();
+        List<Z> chunk = new ArrayList<>();
 
         long chunkMessagesCount = 0;
-        for (ExpoPushMessage message : messages) {
+        for (Z message : messages) {
             List<String> partialTo = new ArrayList<>();
             for (String recipient : message.to) {
                 if (recipient.length() <= 0) continue;
@@ -184,7 +184,8 @@ public class PushClient {
                 if (chunkMessagesCount >= PUSH_NOTIFICATION_CHUNK_LIMIT) {
                     // Cap this chunk here if it already exceeds PUSH_NOTIFICATION_CHUNK_LIMIT.
                     // Then create a new chunk to continue on the remaining recipients for this message.
-                    chunk.add(new ExpoPushMessage(partialTo, message));
+                    
+                    chunk.add((Z) message.toChunk(partialTo));
                     chunks.add(chunk);
                     chunk = new ArrayList<>();
                     chunkMessagesCount = 0;
@@ -193,7 +194,7 @@ public class PushClient {
             }
 
             if (partialTo.size() > 0) {
-                chunk.add(new ExpoPushMessage(partialTo, message));
+                chunk.add((Z) message.toChunk(partialTo));
             }
 
             if (chunkMessagesCount >= PUSH_NOTIFICATION_CHUNK_LIMIT) {

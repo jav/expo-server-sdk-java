@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,8 +25,8 @@ class ExpoPushMessageTest {
         ExpoMessageSound soundA = new ExpoMessageSound();
         ExpoMessageSound soundB = new ExpoMessageSound();
 
-        ExpoPushMessage a = new ExpoPushMessage();
-        ExpoPushMessage b = new ExpoPushMessage();
+        DefaultExpoPushMessage a = new DefaultExpoPushMessage();
+        DefaultExpoPushMessage b = new DefaultExpoPushMessage();
         assertEquals(a, b);
 
         // check equals self, as in issue https://github.com/jav/expo-server-sdk-java/issues/6
@@ -55,7 +56,7 @@ class ExpoPushMessageTest {
 
     @Test
     void priorityMayOnlyBeDefaultNormalOrHigh() {
-        ExpoPushMessage eps = new ExpoPushMessage();
+        DefaultExpoPushMessage eps = new DefaultExpoPushMessage();
         eps.setPriority("deFAUlt");
         eps.setPriority("noRMal");
         eps.setPriority("hIGh");
@@ -78,7 +79,7 @@ class ExpoPushMessageTest {
         JsonGenerator generator = null;
         String epmJson = null;
         String jsonControl = null;
-        ExpoPushMessage epm = null;
+        ExpoPushMessage<Map<String,String>> epm = null;
 
         // Empty object
         writer = new StringWriter();
@@ -89,7 +90,7 @@ class ExpoPushMessageTest {
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
-        epm = new ExpoPushMessage();
+        epm = new DefaultExpoPushMessage();
         epmJson = mapper.writeValueAsString(epm);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(epmJson));
 
@@ -109,7 +110,7 @@ class ExpoPushMessageTest {
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
-        epm = new ExpoPushMessage(Arrays.asList("Recipient 1", "Recipient 2"));
+        epm = new DefaultExpoPushMessage(Arrays.asList("Recipient 1", "Recipient 2"));
         epm.title = "My title";
         ExpoMessageSound ems = new ExpoMessageSound("default");
         ems.setVolume(60);
