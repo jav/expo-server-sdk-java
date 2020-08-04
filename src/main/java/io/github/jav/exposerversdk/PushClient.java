@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class PushClient<Z extends ExpoPushMessage<?>> {
     static public final long PUSH_NOTIFICATION_CHUNK_LIMIT = 100;
@@ -49,17 +50,13 @@ public class PushClient<Z extends ExpoPushMessage<?>> {
                                 retList.add(mapper.convertValue(node, ExpoPushTicket.class));
                             }
                             return retList;
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            return messages.stream().map(m -> new ExpoPushTicket(e)).collect(Collectors.toList());
                         }
-                        return null;
                     });
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Incorrect baseApiUrl" + baseApiUrl, e);
         }
-        return null;
     }
 
     public CompletableFuture<List<ExpoPushReceiept>> getPushNotificationReceiptsAsync(List<String> _ids) {
@@ -81,19 +78,15 @@ public class PushClient<Z extends ExpoPushMessage<?>> {
                                 retList.add(epr);
                             }
                             return retList;
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            return _ids.stream().map(id -> new ExpoPushReceiept(id, e)).collect(Collectors.toList());
                         }
-                        return null;
                     });
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Incorrect baseApiUrl" + baseApiUrl, e);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Incorrect baseApiUrl" + baseApiUrl, e);
         }
-        return null;
     }
 
     protected <T> CompletableFuture<String> _postNotificationAsync(URL url, List<T> messages) {
@@ -104,7 +97,7 @@ public class PushClient<Z extends ExpoPushMessage<?>> {
             json = objectMapper.
                     writeValueAsString(messages);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Could not convert to json", e);
         }
         return pushServerResolver.postAsync(url, json);
     }
@@ -128,7 +121,7 @@ public class PushClient<Z extends ExpoPushMessage<?>> {
             json = objectMapper.
                     writeValueAsString(jsonReceiptHelper);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Could not convert to json", e);
         }
         return pushServerResolver.postAsync(url, json);
     }

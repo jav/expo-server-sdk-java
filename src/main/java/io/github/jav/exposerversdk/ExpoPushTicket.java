@@ -23,6 +23,19 @@ public class ExpoPushTicket implements JsonSerializable {
     private String message = null;
     @JsonProperty("details")
     private ExpoPushTicket.Details details = null;
+    @JsonIgnore
+    private Exception cause = null;
+    
+    public ExpoPushTicket() {
+        
+    }
+    public ExpoPushTicket(Exception cause) {
+        this.cause = cause;
+        this.status = Status.EXCEPTION;
+        this.message = cause.getClass().getName();
+        this.details = new ExpoPushTicket.Details();
+        this.details.error = cause.getMessage();
+    }
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -67,6 +80,10 @@ public class ExpoPushTicket implements JsonSerializable {
         this.additionalProperties.put(name, value);
     }
 
+    public Exception getCause() {
+        return cause;
+    }
+    
     @Override
     public void serialize(JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();

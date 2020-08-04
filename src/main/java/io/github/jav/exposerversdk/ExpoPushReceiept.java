@@ -27,6 +27,23 @@ public class ExpoPushReceiept implements JsonSerializable {
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    
+    @JsonIgnore
+    private Exception cause;
+    
+    public ExpoPushReceiept() {
+        
+    }
+    public ExpoPushReceiept(String id, Exception cause) {
+        this.id = id;
+        this.cause = cause;
+        this.status = Status.EXCEPTION;
+        this.message = cause.getClass().getName();
+        this.details = new Details();
+        details.error = cause.getMessage();
+        
+        
+    }
 
     @JsonProperty("status")
     public Status getStatus() {
@@ -66,6 +83,11 @@ public class ExpoPushReceiept implements JsonSerializable {
     @JsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
+    }
+    
+    public Exception getCause() {
+        return cause;
+        
     }
 
 
