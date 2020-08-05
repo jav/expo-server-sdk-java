@@ -9,9 +9,12 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,8 @@ public class PushClient<Z extends ExpoPushMessage<?>> {
     static public final long PUSH_NOTIFICATION_RECEIPT_CHUNK_LIMIT = 300;
     public URL baseApiUrl = null;
     public PushServerResolver pushServerResolver = new DefaultPushServerResolver();
+
+    static public final Set<String> INVALID_TOKEN_ERRORS= new HashSet<>(Arrays.asList("DeviceNotRegistered"));
 
     public PushClient() {
         try {
@@ -38,20 +43,49 @@ public class PushClient<Z extends ExpoPushMessage<?>> {
         return baseApiUrl;
     }
 
-    public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<Z> messages) {
+    public CompletableFuture<ExpoPushResponse> sendPushNotificationsAsync(List<Z> messages) {
         try {
+            
+            
             return _postNotificationAsync(new URL(baseApiUrl + "/push/send"), messages)
                     .thenApply((String jsonString) -> {
                         try {
                             ObjectMapper mapper = new ObjectMapper();
-                            JsonNode dataNode = mapper.readTree(jsonString).get("data");
-                            List<ExpoPushTicket> retList = new ArrayList<>();
-                            for (JsonNode node : dataNode) {
-                                retList.add(mapper.convertValue(node, ExpoPushTicket.class));
+                            ExpoPushResponse response = mapper.readValue(jsonString,  ExpoPushResponse.class);
+                            List<ExpoPushTicket> data = response.getData();
+                            int currentMessageIndex = -1;
+                            Z currentMessage = null;
+                            int currentRecepientIndex = -1;
+                            int currentRecepientSize = -1;
+                            Status overallStatus = Status.OK;
+                            // we need to find the invalid recepients
+                            List<String> invalidTokens = new ArrayList<>();
+                            for (int i=0; i< data.size(); i++) {
+                                if (++currentRecepientIndex > currentRecepientSize) {
+                                    currentMessageIndex++;
+                                    currentMessage = messages.get(currentMessageIndex);
+                                    currentRecepientIndex = 0;
+                                    currentRecepientSize = currentMessage.getTo().size();
+                                }
+                                ExpoPushTicket ticket = data.get(i);
+                                ticket.setTo(currentMessage.getTo().get(currentRecepientIndex));
+                                if (ticket.getStatus() != Status.OK) {
+                                    if (overallStatus == Status.OK) {
+                                        overallStatus = ticket.getStatus();
+                                    }
+                                    if (ticket.getDetails() != null && INVALID_TOKEN_ERRORS.contains(ticket.getDetails().getError())) {
+                                        invalidTokens.add(ticket.getTo());   
+                                    }
+                                }
+                                response.setInvalidTokens(invalidTokens);
                             }
-                            return retList;
+                            
+                            return response;
                         } catch (IOException e) {
-                            return messages.stream().map(m -> new ExpoPushTicket(e)).collect(Collectors.toList());
+                            ExpoPushResponse response = new ExpoPushResponse();
+                            response.setStatus(Status.ERROR);
+                            response.setCause(e);
+                            return response;
                         }
                     });
         } catch (MalformedURLException e) {

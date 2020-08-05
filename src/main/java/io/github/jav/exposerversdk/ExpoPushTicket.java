@@ -17,6 +17,8 @@ public class ExpoPushTicket implements JsonSerializable {
 
     @JsonProperty("id")
     public String id = null;
+    @JsonProperty("to")
+    public String to = null;
     @JsonProperty("status")
     private Status status = null;
     @JsonProperty("message")
@@ -69,6 +71,14 @@ public class ExpoPushTicket implements JsonSerializable {
     public void setDetails(ExpoPushTicket.Details details) {
         this.details = details;
     }
+    @JsonProperty("to")
+    public String getTo() {
+        return to;
+    }
+    @JsonProperty("to")
+    public void setTo(String to) {
+        this.to = to;
+    }
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
@@ -100,7 +110,13 @@ public class ExpoPushTicket implements JsonSerializable {
         jsonGenerator.writeEndObject();
         return;
     }
+    
 
+    @Override
+    public String toString() {
+        return "ExpoPushTicket [id=" + id + ", status=" + status + ", message=" + message + ", details=" + details + ", additionalProperties="
+                + additionalProperties + "]";
+    }
     @Override
     public void serializeWithType(JsonGenerator jsonGenerator, SerializerProvider serializerProvider, TypeSerializer typeSerializer) throws IOException {
         throw new UnsupportedOperationException("serializeWithType() not implemented.");
@@ -178,5 +194,17 @@ public class ExpoPushTicket implements JsonSerializable {
         public int hashCode() {
             return Objects.hash(getError(), getSentAt(), getAdditionalProperties());
         }
+
+        public void setAdditionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties = additionalProperties;
+        }
+
+        @Override
+        public String toString() {
+            return "Details [error=" + error + ", sentAt=" + sentAt + ", additionalProperties=" + additionalProperties + "]";
+        }
+        
+        
+        
     }
 }
