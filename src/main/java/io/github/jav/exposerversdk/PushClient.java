@@ -60,8 +60,9 @@ public class PushClient<Z extends ExpoPushMessage<?>> {
                             Status overallStatus = Status.OK;
                             // we need to find the invalid recepients
                             List<String> invalidTokens = new ArrayList<>();
+                            response.setInvalidTokens(invalidTokens);
                             for (int i=0; i< data.size(); i++) {
-                                if (++currentRecepientIndex > currentRecepientSize) {
+                                while (++currentRecepientIndex >= currentRecepientSize) {
                                     currentMessageIndex++;
                                     currentMessage = messages.get(currentMessageIndex);
                                     currentRecepientIndex = 0;
@@ -77,11 +78,10 @@ public class PushClient<Z extends ExpoPushMessage<?>> {
                                         invalidTokens.add(ticket.getTo());   
                                     }
                                 }
-                                response.setInvalidTokens(invalidTokens);
                             }
                             
                             return response;
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             ExpoPushResponse response = new ExpoPushResponse();
                             response.setStatus(Status.ERROR);
                             response.setCause(e);
