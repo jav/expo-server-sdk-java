@@ -62,7 +62,7 @@ public class PushClient<Z extends ExpoPushMessage<?>> {
                             List<String> invalidTokens = new ArrayList<>();
                             response.setInvalidTokens(invalidTokens);
                             for (int i=0; i< data.size(); i++) {
-                                while (++currentRecepientIndex >= currentRecepientSize) {
+                                if (++currentRecepientIndex >= currentRecepientSize) {
                                     currentMessageIndex++;
                                     currentMessage = messages.get(currentMessageIndex);
                                     currentRecepientIndex = 0;
