@@ -19,8 +19,8 @@ public class Main {
     public static void main(String[] args) {
 	String recipient = "ExponentToken[XYZ]";
 
-        if (!PushClient.isExponentPushToken(receipient))
-                throw new Error("Token:" + receipient + " is not a valid token.");
+        if (!PushClient.isExponentPushToken(recipient))
+                throw new Error("Token:" + recipient + " is not a valid token.");
 
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList<>();
