@@ -1,15 +1,3 @@
-f![Java CI with Maven](https://github.com/jav/expo-server-sdk-java/workflows/Java%20CI%20with%20Maven/badge.svg)
-
-## expo-server-sdk-java
-This is a java implementation of the [node server-side library](https://github.com/expo/expo-server-sdk-node) for working with expo using Java.
-For other implementations, see [the expo docs](https://docs.expo.io/versions/latest/guides/push-notifications/#2-call-expos-push-api-with-the).
-
-
-## Usage
-Add package to your source tree (the package is not yet uploaded to e.g. Maven Central).
-
-Then try the [Example Server](https://github.com/jav/expo-server-sdk-java/blob/master/src/java/io/github/jav/exposerversdk/example/ExampleExpoServer.java)
-```java
 package io.github.jav.exposerversdk.example;
 
 import io.github.jav.exposerversdk.ExpoPushMessage;
@@ -60,25 +48,3 @@ public class ExampleExpoServer {
         }
     }
 }
-```
-
-## Maven
-```
-<dependency>
-  <groupId>io.github.jav</groupId>
-  <artifactId>expo-server-sdk</artifactId>
-  <version>0.7.0</version>
-</dependency>
-```
-## Gradle
-`implementation 'io.github.jav:expo-server-sdk:0.7.0'`
-
-## Maven central entry
-https://search.maven.org/artifact/io.github.jav/expo-server-sdk
-
-## See Also
-
-  * https://github.com/expo/expo-server-sdk-node
-  * https://github.com/expo/expo-server-sdk-ruby
-  * https://github.com/expo/expo-server-sdk-python
-  * https://github.com/expo/expo-server-sdk-rust
