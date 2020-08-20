@@ -13,29 +13,18 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"_debug"})
-public class ExpoPushMessage implements JsonSerializable {
+public class ExpoPushMessage {
 
-    @JsonProperty("to")
     public List<String> to = null;
-    @JsonProperty("data")
     public Map<String, String> data = null;
-    @JsonProperty("title")
     public String title = null;
-    @JsonProperty("subtitle")
     public String subtitle = null;
-    @JsonProperty("body")
     public String body = null;
-    @JsonProperty("sound")
     public ExpoMessageSound sound = null;
-    @JsonProperty("ttl")
     public long ttl = -1;
-    @JsonProperty("expiration")
     public long expiration = -1;
-    @JsonProperty("priority")
     private Priority priority = null;
-    @JsonProperty("badge")
     public long badge = -1;
-    @JsonProperty("channelId")
     public String channelId = null;
 
     public ExpoPushMessage() {
@@ -64,158 +53,93 @@ public class ExpoPushMessage implements JsonSerializable {
         to = Arrays.asList(_to);
     }
 
-    @JsonProperty("to")
     public List<String> getTo() {
         return to;
     }
 
-    @JsonProperty("to")
     public void setTo(List<String> to) {
         this.to = to;
     }
 
-    @JsonProperty("data")
     public Map<String, String> getData() {
         return data;
     }
 
-    @JsonProperty("data")
     public void setData(Map<String, String> data) {
         this.data = data;
     }
 
-    @JsonProperty("title")
     public String getTitle() {
         return title;
     }
 
-    @JsonProperty("title")
     public void setTitle(String title) {
         this.title = title;
     }
 
-    @JsonProperty("subtitle")
     public String getSubtitle() {
         return subtitle;
     }
 
-    @JsonProperty("subtitle")
     public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
     }
 
-    @JsonProperty("body")
     public String getBody() {
         return body;
     }
 
-    @JsonProperty("body")
     public void setBody(String body) {
         this.body = body;
     }
 
-    @JsonProperty("sound")
     public ExpoMessageSound getSound() {
         return sound;
     }
 
-    @JsonProperty("sound")
     public void setSound(ExpoMessageSound sound) {
         this.sound = sound;
     }
 
-    @JsonProperty("ttl")
     public long getTtl() {
         return ttl;
     }
 
-    @JsonProperty("ttl")
     public void setTtl(long ttl) {
         this.ttl = ttl;
     }
 
-    @JsonProperty("expiration")
     public long getExpiration() {
         return expiration;
     }
 
-    @JsonProperty("expiration")
     public void setExpiration(long expiration) {
         this.expiration = expiration;
     }
 
-    @JsonProperty("badge")
     public long getBadge() {
         return badge;
     }
 
-    @JsonProperty("badge")
     public void setBadge(long badge) {
         this.badge = badge;
     }
 
-    @JsonProperty("channelId")
     public String getChannelId() {
         return channelId;
     }
 
-    @JsonProperty("channelId")
     public void setChannelId(String channelId) {
         this.channelId = channelId;
     }
 
-    @JsonProperty("priority")
     public void setPriority(Priority _priority) {
         priority = _priority;
     }
 
-    @JsonProperty("priority")
     public Priority getPriority() {
         return priority;
     }
-
-    @Override
-    public void serialize(JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeStartObject();
-        if (to != null) {
-            jsonGenerator.writeArrayFieldStart("to");
-            for (String recipient : to) {
-                jsonGenerator.writeString(recipient);
-            }
-            jsonGenerator.writeEndArray();
-        }
-        if (data != null)
-            jsonGenerator.writeObjectField("data", data);
-        if (title != null)
-            jsonGenerator.writeStringField("title", title);
-        if (subtitle != null)
-            jsonGenerator.writeStringField("subtitle", subtitle);
-        if (body != null)
-            jsonGenerator.writeStringField("body", body);
-        if (sound != null)
-            jsonGenerator.writeObjectField("sound", sound);
-        if (ttl >= 0)
-            jsonGenerator.writeNumberField("ttl", ttl);
-        if (expiration >= 0)
-            jsonGenerator.writeNumberField("expiration", expiration);
-        if (priority != null)
-            jsonGenerator.writeStringField("priority", priority == null ? null : priority.toString());
-
-        if (badge >= 0)
-            jsonGenerator.writeNumberField("badge", badge);
-
-        if (channelId != null)
-            jsonGenerator.writeStringField("channelId", channelId);
-
-        jsonGenerator.writeEndObject();
-        return;
-    }
-
-    @Override
-    public void serializeWithType(JsonGenerator jsonGenerator, SerializerProvider serializerProvider, TypeSerializer typeSerializer) throws IOException {
-        throw new UnsupportedOperationException("serializeWithType() not implemented.");
-    }
-
 
     @Override
     public boolean equals(Object o) {

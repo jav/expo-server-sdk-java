@@ -14,46 +14,36 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"_debug"})
-public class ExpoPushTicket implements JsonSerializable {
+public class ExpoPushTicket  {
 
-    @JsonProperty("id")
     public String id = null;
-    @JsonProperty("status")
     private Status status = null;
-    @JsonProperty("message")
     private String message = null;
-    @JsonProperty("details")
     private ExpoPushTicket.Details details = null;
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("status")
     public Status getStatus() {
         return status;
     }
 
-    @JsonProperty("status")
     public void setStatus(Status status) {
         this.status = status;
     }
 
-    @JsonProperty("message")
     public String getMessage() {
         return message;
     }
 
-    @JsonProperty("message")
     public void setMessage(String message) {
         this.message = message;
     }
 
-    @JsonProperty("details")
     public ExpoPushTicket.Details getDetails() {
         return details;
     }
 
-    @JsonProperty("details")
     public void setDetails(ExpoPushTicket.Details details) {
         this.details = details;
     }
@@ -66,28 +56,6 @@ public class ExpoPushTicket implements JsonSerializable {
     @JsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
-    }
-
-    @Override
-    public void serialize(JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("status", status == null ? null : status.toString());
-        if (status != null) {
-            if (status == Status.OK) {
-                jsonGenerator.writeStringField("id", id);
-
-            } else {
-                jsonGenerator.writeStringField("message", message);
-                jsonGenerator.writeObjectField("details", details);
-            }
-        }
-        jsonGenerator.writeEndObject();
-        return;
-    }
-
-    @Override
-    public void serializeWithType(JsonGenerator jsonGenerator, SerializerProvider serializerProvider, TypeSerializer typeSerializer) throws IOException {
-        throw new UnsupportedOperationException("serializeWithType() not implemented.");
     }
 
     @Override
@@ -107,32 +75,27 @@ public class ExpoPushTicket implements JsonSerializable {
         return Objects.hash(id, getStatus(), getMessage(), getDetails(), getAdditionalProperties());
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties({"apns", "fcm"})
     public static class Details {
-        @JsonProperty("error")
         private String error;
-        @JsonProperty("sentAt")
         private Integer sentAt;
         @JsonIgnore
         private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-        @JsonProperty("error")
         public String getError() {
             return error;
         }
 
-        @JsonProperty("error")
         public ExpoPushTicket.Details setError(String error) {
             this.error = error;
             return this;
         }
 
-        @JsonProperty("sentAt")
         public Integer getSentAt() {
             return sentAt;
         }
 
-        @JsonProperty("sentAt")
         public Details setSentAt(Integer sentAt) {
             this.sentAt = sentAt;
             return this;

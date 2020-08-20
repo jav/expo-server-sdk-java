@@ -68,6 +68,9 @@ class ExpoPushMessageTest {
         generator.writeStartObject();
         generator.writeArrayFieldStart("to");
         generator.writeEndArray();
+        generator.writeNumberField("ttl", -1);
+        generator.writeNumberField("expiration", -1);
+        generator.writeNumberField("badge", -1);
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
@@ -85,6 +88,9 @@ class ExpoPushMessageTest {
         generator.writeEndArray();
         generator.writeStringField("title", "My title");
         generator.writeStringField("priority", "normal");
+        generator.writeNumberField("ttl", -1);
+        generator.writeNumberField("expiration", -1);
+        generator.writeNumberField("badge", -1);
         generator.writeObjectFieldStart("sound");
         generator.writeStringField("name", "default");
         generator.writeNumberField("volume", 60);

@@ -55,7 +55,6 @@ class ExpoPushRecieptTest {
         writer = new StringWriter();
         generator = factory.createGenerator(writer);
         generator.writeStartObject();
-        generator.writeNullField("status");
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
