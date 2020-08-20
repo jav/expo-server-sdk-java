@@ -21,10 +21,10 @@ public class ExpoPushMessage {
     public String subtitle = null;
     public String body = null;
     public ExpoMessageSound sound = null;
-    public long ttl = -1;
-    public long expiration = -1;
+    public Long ttl = null;
+    public Long expiration = null;
     private Priority priority = null;
-    public long badge = -1;
+    public Long badge = null;
     public String channelId = null;
 
     public ExpoPushMessage() {
@@ -101,27 +101,27 @@ public class ExpoPushMessage {
         this.sound = sound;
     }
 
-    public long getTtl() {
+    public Long getTtl() {
         return ttl;
     }
 
-    public void setTtl(long ttl) {
+    public void setTtl(Long ttl) {
         this.ttl = ttl;
     }
 
-    public long getExpiration() {
+    public Long getExpiration() {
         return expiration;
     }
 
-    public void setExpiration(long expiration) {
+    public void setExpiration(Long expiration) {
         this.expiration = expiration;
     }
 
-    public long getBadge() {
+    public Long getBadge() {
         return badge;
     }
 
-    public void setBadge(long badge) {
+    public void setBadge(Long badge) {
         this.badge = badge;
     }
 
