@@ -52,24 +52,6 @@ class ExpoPushMessageTest {
         assertEquals(a, b);
     }
 
-
-    @Test
-    void priorityMayOnlyBeDefaultNormalOrHigh() {
-        ExpoPushMessage eps = new ExpoPushMessage();
-        eps.setPriority("deFAUlt");
-        eps.setPriority("noRMal");
-        eps.setPriority("hIGh");
-        // No assert(), throwing an exception will fail the test
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            eps.setPriority("super high");
-        });
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            eps.setPriority("");
-        });
-    }
-
     @Test
     void jsonSerializesCorrectly() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -93,7 +75,7 @@ class ExpoPushMessageTest {
         epmJson = mapper.writeValueAsString(epm);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(epmJson));
 
-        // Empty two recipients, title, sound,
+        // Empty two recipients, title, sound, priority
         writer = new StringWriter();
         generator = factory.createGenerator(writer);
         generator.writeStartObject();
@@ -102,6 +84,7 @@ class ExpoPushMessageTest {
         generator.writeString("Recipient 2");
         generator.writeEndArray();
         generator.writeStringField("title", "My title");
+        generator.writeStringField("priority", "normal");
         generator.writeObjectFieldStart("sound");
         generator.writeStringField("name", "default");
         generator.writeNumberField("volume", 60);
@@ -114,6 +97,7 @@ class ExpoPushMessageTest {
         ExpoMessageSound ems = new ExpoMessageSound("default");
         ems.setVolume(60);
         epm.sound = ems;
+        epm.setPriority(Priority.NORMAL);
         epmJson = mapper.writeValueAsString(epm);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(epmJson));
 

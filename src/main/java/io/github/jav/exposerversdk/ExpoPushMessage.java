@@ -32,7 +32,7 @@ public class ExpoPushMessage implements JsonSerializable {
     @JsonProperty("expiration")
     public long expiration = -1;
     @JsonProperty("priority")
-    private String priority = null;
+    private Priority priority = null;
     @JsonProperty("badge")
     public long badge = -1;
     @JsonProperty("channelId")
@@ -165,18 +165,12 @@ public class ExpoPushMessage implements JsonSerializable {
     }
 
     @JsonProperty("priority")
-    public void setPriority(String _priority) {
-        if (null != _priority &&
-                !_priority.toLowerCase().equals("default") &&
-                !_priority.toLowerCase().equals("high") &&
-                !_priority.toLowerCase().equals("normal")
-        )
-            throw new IllegalArgumentException();
+    public void setPriority(Priority _priority) {
         priority = _priority;
     }
 
     @JsonProperty("priority")
-    public String getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
@@ -205,7 +199,7 @@ public class ExpoPushMessage implements JsonSerializable {
         if (expiration >= 0)
             jsonGenerator.writeNumberField("expiration", expiration);
         if (priority != null)
-            jsonGenerator.writeStringField("priority", priority);
+            jsonGenerator.writeStringField("priority", priority == null ? null : priority.toString());
 
         if (badge >= 0)
             jsonGenerator.writeNumberField("badge", badge);
