@@ -12,13 +12,20 @@ import java.util.Objects;
 @JsonIgnoreProperties({"_debug"})
 public class ExpoPushReceiept {
 
-    public String id = null;
+    private String id = null;
     private Status status = null;
     private String message = null;
     private Details details = null;
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    public String getId()  {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Status getStatus() {
         return status;

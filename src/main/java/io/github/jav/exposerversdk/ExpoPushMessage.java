@@ -10,17 +10,17 @@ import java.util.*;
 @JsonIgnoreProperties({"_debug"})
 public class ExpoPushMessage {
 
-    public List<String> to = null;
-    public Map<String, String> data = null;
-    public String title = null;
-    public String subtitle = null;
-    public String body = null;
-    public ExpoMessageSound sound = null;
-    public Long ttl = null;
-    public Long expiration = null;
+    private List<String> to = null;
+    private Map<String, String> data = null;
+    private String title = null;
+    private String subtitle = null;
+    private String body = null;
+    private ExpoMessageSound sound = null;
+    private Long ttl = null;
+    private Long expiration = null;
     private Priority priority = null;
-    public Long badge = null;
-    public String channelId = null;
+    private Long badge = null;
+    private String channelId = null;
 
     public ExpoPushMessage() {
         to = new ArrayList<>();

@@ -74,7 +74,7 @@ class PushClientTest {
         List<List<ExpoPushMessage>> chunks = client.chunkPushNotifications(messages);
         assertEquals(1, chunks.size());
         assertEquals(1, chunks.get(0).size());
-        assertEquals(messagesLength, chunks.get(0).get(0).to.size());
+        assertEquals(messagesLength, chunks.get(0).get(0).getTo().size());
     }
 
     @Test
@@ -140,7 +140,7 @@ class PushClientTest {
         List<List<ExpoPushMessage>> chunks = client.chunkPushNotifications(messages);
         assertEquals(1, chunks.size());
         assertEquals(1, chunks.get(0).size());
-        assertEquals(100, chunks.get(0).get(0).to.size());
+        assertEquals(100, chunks.get(0).get(0).getTo().size());
     }
 
     @Test
@@ -272,7 +272,7 @@ class PushClientTest {
         }
 
         ExpoPushReceiept receipt = messageRepliesFutures.get(0).get().get(0);
-        assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", receipt.id);
+        assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", receipt.getId());
         assertEquals(Status.ERROR, receipt.getStatus());
         assertTrue(receipt.getMessage().startsWith("The Apple Push"));
         assertTrue(receipt.getMessage().endsWith("this error means."));

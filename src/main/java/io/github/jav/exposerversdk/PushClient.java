@@ -79,7 +79,7 @@ public class PushClient {
                                 JsonNode expoPushRecieptJsonNode = field.getValue();
                                 ExpoPushReceiept epr = mapper.treeToValue(expoPushRecieptJsonNode, ExpoPushReceiept.class);
 
-                                epr.id = key;
+                                epr.setId(key);
                                 retList.add(epr);
                             }
                             return retList;
@@ -148,7 +148,7 @@ public class PushClient {
     }
 
     public static long _getActualMessagesCount(List<ExpoPushMessage> messages) {
-        return messages.stream().reduce(0, (acc, cur) -> acc + cur.to.size(), Integer::sum);
+        return messages.stream().reduce(0, (acc, cur) -> acc + cur.getTo().size(), Integer::sum);
     }
 
     public List<List<String>> chunkPushNotificationReceiptIds(List<String> recieptIds) {
@@ -179,7 +179,7 @@ public class PushClient {
         long chunkMessagesCount = 0;
         for (ExpoPushMessage message : messages) {
             List<String> partialTo = new ArrayList<>();
-            for (String recipient : message.to) {
+            for (String recipient : message.getTo()) {
                 if (recipient.length() <= 0) continue;
                 partialTo.add(recipient);
                 chunkMessagesCount++;

@@ -94,10 +94,10 @@ class ExpoPushMessageTest {
         generator.close();
         jsonControl = writer.toString();
         epm = new ExpoPushMessage(Arrays.asList("Recipient 1", "Recipient 2"));
-        epm.title = "My title";
+        epm.setTitle("My title");
         ExpoMessageSound ems = new ExpoMessageSound("default");
         ems.setVolume(60);
-        epm.sound = ems;
+        epm.setSound(ems);
         epm.setPriority(Priority.NORMAL);
         epmJson = mapper.writeValueAsString(epm);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(epmJson));

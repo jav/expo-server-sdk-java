@@ -71,7 +71,7 @@ class ExpoPushRecieptTest {
         jsonControl = writer.toString();
         ept = new ExpoPushReceiept();
         ept.setStatus(Status.OK);
-        ept.id = "123";
+        ept.setId("123");
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
 
@@ -118,9 +118,9 @@ class ExpoPushRecieptTest {
 
         JsonNode dataNode = mapper.readTree(SOURCE_JSON).get("2011eb6d-d4d3-440c-a93c-37ac4b51ea09");
         ExpoPushReceiept epr = mapper.treeToValue(dataNode, ExpoPushReceiept.class);
-        epr.id = "2011eb6d-d4d3-440c-a93c-37ac4b51ea09";
+        epr.setId("2011eb6d-d4d3-440c-a93c-37ac4b51ea09");
 
-        assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", epr.id);
+        assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", epr.getId());
         assertEquals(Status.ERROR, epr.getStatus());
         assertEquals("MessageTooBig", epr.getDetails().getError());
     }
@@ -133,9 +133,9 @@ class ExpoPushRecieptTest {
         epr2 = new ExpoPushReceiept();
         assertEquals(epr1, epr2);
 
-        epr1.id = "1";
+        epr1.setId("1");
         assertNotEquals(epr1, epr2);
-        epr2.id = "1";
+        epr2.setId("1");
         assertEquals(epr1, epr2);
 
         epr1.setStatus(Status.ERROR);

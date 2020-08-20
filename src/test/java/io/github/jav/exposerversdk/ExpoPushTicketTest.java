@@ -68,7 +68,7 @@ class ExpoPushTicketTest {
         jsonControl = writer.toString();
         ept = new ExpoPushTicket();
         ept.setStatus(Status.OK);
-        ept.id = "123";
+        ept.setId("123");
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
 
@@ -104,9 +104,9 @@ class ExpoPushTicketTest {
         ept2 = new ExpoPushTicket();
         assertEquals(ept1, ept2);
 
-        ept1.id = "1";
+        ept1.setId("1");
         assertNotEquals(ept1, ept2);
-        ept2.id = "1";
+        ept2.setId("1");
         assertEquals(ept1, ept2);
 
         ept1.setStatus(Status.ERROR);
