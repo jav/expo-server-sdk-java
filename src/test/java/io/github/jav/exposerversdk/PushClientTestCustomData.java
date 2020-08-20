@@ -14,11 +14,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-class PushClientTest {
+class PushClientTestCustomData {
 
     @Test
     public void apiBaseUrlIsOverridable() throws MalformedURLException {
