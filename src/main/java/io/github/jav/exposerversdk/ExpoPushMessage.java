@@ -2,13 +2,8 @@ package io.github.jav.exposerversdk;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializable;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
+import io.github.jav.exposerversdk.enums.Priority;
 
-import java.io.IOException;
 import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

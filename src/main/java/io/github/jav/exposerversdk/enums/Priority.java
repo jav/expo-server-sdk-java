@@ -1,4 +1,4 @@
-package io.github.jav.exposerversdk;
+package io.github.jav.exposerversdk.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

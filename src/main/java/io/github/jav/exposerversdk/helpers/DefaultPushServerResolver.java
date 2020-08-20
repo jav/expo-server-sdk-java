@@ -1,4 +1,4 @@
-package io.github.jav.exposerversdk;
+package io.github.jav.exposerversdk.helpers;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
