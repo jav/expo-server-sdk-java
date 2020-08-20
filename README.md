@@ -10,7 +10,7 @@ Add package to your source tree (the package is not yet uploaded to e.g. Maven C
 
 Then try the [Example Server](https://github.com/jav/expo-server-sdk-java/blob/master/src/java/io/github/jav/exposerversdk/example/ExampleExpoServer.java)
 ```java
-package io.github.jav.exposerversdk.example;
+package io.github.jav.exposerversdk.examples;
 
 import io.github.jav.exposerversdk.ExpoPushMessage;
 import io.github.jav.exposerversdk.ExpoPushTicket;

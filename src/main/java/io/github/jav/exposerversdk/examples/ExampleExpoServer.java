@@ -1,4 +1,4 @@
-package io.github.jav.exposerversdk.example;
+package io.github.jav.exposerversdk.examples;
 
 import io.github.jav.exposerversdk.ExpoPushMessage;
 import io.github.jav.exposerversdk.ExpoPushTicket;
