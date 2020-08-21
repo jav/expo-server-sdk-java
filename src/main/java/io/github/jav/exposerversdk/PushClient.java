@@ -15,11 +15,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public class PushClient extends PushClientCustomData<ExpoPushMessage> {
 
     public PushClient() {
         super();
+    public PushClient() throws PushClientException {
+        try {
+            baseApiUrl = new URL("https://exp.host/--/api/v2");
+        } catch (MalformedURLException e) {
+            throw new PushClientException(e);
+        }
+    }
+
+    public URL getBaseApiUrl() {
+        return baseApiUrl;
     }
 
     public PushClient setBaseApiUrl(URL _baseApiUrl) {

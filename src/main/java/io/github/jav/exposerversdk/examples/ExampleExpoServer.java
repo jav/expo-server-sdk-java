@@ -3,6 +3,7 @@ package io.github.jav.exposerversdk.examples;
 import io.github.jav.exposerversdk.ExpoPushMessage;
 import io.github.jav.exposerversdk.ExpoPushTicket;
 import io.github.jav.exposerversdk.PushClient;
+import io.github.jav.exposerversdk.PushClientException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class ExampleExpoServer {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws PushClientException {
         String recipient = "ExponentToken[XYZ]"; // To test, you must replace the recipient with a valid token!
         String message = "A push message from ExampleExpoServer";
 

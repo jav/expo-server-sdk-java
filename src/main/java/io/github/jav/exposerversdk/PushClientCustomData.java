@@ -26,7 +26,7 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
         try {
             baseApiUrl = new URL("https://exp.host/--/api/v2");
         } catch (MalformedURLException e) {
-            //Will never fail
+            throw new PushClientException(e);
         }
     }
 
@@ -51,17 +51,13 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
                                 retList.add(mapper.convertValue(node, ExpoPushTicket.class));
                             }
                             return retList;
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            throw new PushNotificationException(e, messages);
                         }
-                        return null;
                     });
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            throw new PushClientException(e);
         }
-        return null;
     }
 
     public CompletableFuture<List<ExpoPushReceiept>> getPushNotificationReceiptsAsync(List<String> _ids) {
@@ -83,19 +79,13 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
                                 retList.add(epr);
                             }
                             return retList;
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            throw new PushNotificationReceiptException(e);
                         }
-                        return null;
                     });
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            throw new PushNotificationReceiptException(e);
         }
-        return null;
     }
 
     protected <T> CompletableFuture<String> _postNotificationAsync(URL url, List<T> messages) {
