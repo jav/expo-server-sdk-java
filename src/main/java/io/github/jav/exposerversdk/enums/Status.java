@@ -6,9 +6,7 @@ public enum Status {
         @JsonProperty("ok")
         OK("ok"),
         @JsonProperty("error")
-        ERROR("error"),
-        @JsonProperty("exception")
-        EXCEPTION("exception");
+        ERROR("error");
 
         private String status;
         private Status(String status) {

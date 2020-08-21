@@ -15,19 +15,6 @@ public class ExpoPushTicket  {
     private Status status = null;
     private String message = null;
     private ExpoPushTicket.Details details = null;
-    @JsonIgnore
-    private Exception cause = null;
-    
-    public ExpoPushTicket() {
-        
-    }
-    public ExpoPushTicket(Exception cause) {
-        this.cause = cause;
-        this.status = Status.EXCEPTION;
-        this.message = cause.getClass().getName();
-        this.details = new ExpoPushTicket.Details();
-        this.details.error = cause.getMessage();
-    }
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -74,10 +61,6 @@ public class ExpoPushTicket  {
         this.additionalProperties.put(name, value);
     }
 
-    public Exception getCause() {
-        return cause;
-    }
-    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
