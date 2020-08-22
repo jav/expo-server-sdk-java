@@ -139,7 +139,10 @@ class PushClientTest {
         List<List<ExpoPushMessage>> chunks = client.chunkPushNotifications(messages);
         assertEquals(1, chunks.size());
         assertEquals(1, chunks.get(0).size());
-        assertEquals(100, chunks.get(0).get(0).getTo().size());
+        List<ExpoPushMessage> epmList = chunks.get(0);
+        ExpoPushMessage epm = epmList.get(0);
+        int numberOfRecipients = epm.getTo().size();
+        assertEquals(100, numberOfRecipients);
     }
 
     @Test
@@ -284,18 +287,17 @@ class PushClientTest {
         PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);
         when(pushServerResolverMock.postAsync(any(), any())).thenThrow(new CompletionException(new Exception("Exception!")));
 
-        PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
+        PushClient client = new PushClient();
         client.pushServerResolver = pushServerResolverMock;
 
-        List<CompletableFuture<List<ExpoPushMessageCustomData<Integer>>>> messageRepliesFutures = new ArrayList<>();
-        List<ExpoPushMessageCustomData<Integer>> messages = new ArrayList<>(Arrays.asList(new ExpoPushMessageCustomData<>("Recipient 1")));
-        List<List<ExpoPushMessageCustomData<Integer>>> messageChunks = client.chunkPushNotifications(messages);
+        List<ExpoPushMessage> messages = new ArrayList<>(Arrays.asList(new ExpoPushMessage("Recipient 1")));
+        List<List<ExpoPushMessage>> messageChunks = client.chunkPushNotifications(messages);
 
         PushNotificationException pushNotificationException = null;
 
         try {
-            for (List<ExpoPushMessageCustomData<Integer>> chunk : messageChunks) {
-                messageRepliesFutures.add(client.sendPushNotificationsAsync(chunk));
+            for (List<ExpoPushMessage> chunk : messageChunks) {
+                client.sendPushNotificationsAsync(chunk);
             }
         } catch (PushNotificationException e) {
             pushNotificationException = e;
@@ -314,14 +316,13 @@ class PushClientTest {
         PushClient client = new PushClient();
         client.pushServerResolver = pushServerResolverMock;
 
-        List<CompletableFuture<List<ExpoPushReceiept>>> messageRepliesFutures = new ArrayList<>();
         List<List<String>> receiptIdChunks = client.chunkPushNotificationReceiptIds(Arrays.asList("2011eb6d-d4d3-440c-a93c-37ac4b51ea09"));
 
         PushNotificationReceiptsException pushNotificationReceiptsException = null;
 
         try {
             for (List<String> chunk : receiptIdChunks) {
-                messageRepliesFutures.add(client.getPushNotificationReceiptsAsync(chunk));
+                client.getPushNotificationReceiptsAsync(chunk);
             }
         } catch (PushNotificationReceiptsException e) {
             pushNotificationReceiptsException = e;

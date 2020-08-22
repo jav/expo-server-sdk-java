@@ -6,21 +6,19 @@ import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 class PushClientTestCustomData {
 
     @Test
-    public void apiBaseUrlIsOverridable() throws MalformedURLException {
+    public void apiBaseUrlIsOverridable() throws MalformedURLException, PushClientException {
         PushClient client = new PushClient();
         URL apiUrl = client.getBaseApiUrl();
         assertEquals(apiUrl, client.getBaseApiUrl());
@@ -30,7 +28,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void chunkListsOfPushNotificationMessages() {
+    public void chunkListsOfPushNotificationMessages() throws PushClientException {
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList<>(Collections.nCopies(999, new ExpoPushMessage("?")));
         List<List<ExpoPushMessage>> chunks = client.chunkPushNotifications(messages);
@@ -42,7 +40,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void canChunkSmallListsOfPushNotificationMessages() {
+    public void canChunkSmallListsOfPushNotificationMessages() throws PushClientException {
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList<>(Collections.nCopies(10, new ExpoPushMessage("?")));
         List<List<ExpoPushMessage>> chunks = client.chunkPushNotifications(messages);
@@ -51,7 +49,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void canChunkSinglePushNotificationMessageWithListsOfRecipients() {
+    public void canChunkSinglePushNotificationMessageWithListsOfRecipients() throws PushClientException {
         int messagesLength = 999;
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList<>();
@@ -65,7 +63,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void canChunkSinglePushNotificatoinMessageWithSmallListsOfRecipients() {
+    public void canChunkSinglePushNotificatoinMessageWithSmallListsOfRecipients() throws PushClientException {
         int messagesLength = 10;
         PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
         List<ExpoPushMessageCustomData<Integer>> messages = new ArrayList<>();
@@ -77,7 +75,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void chunksPushNotificationMessagesMixedWithListsOfRecipientsAndSingleRecipient() {
+    public void chunksPushNotificationMessagesMixedWithListsOfRecipientsAndSingleRecipient() throws PushClientException {
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList<>();
         messages.add(new ExpoPushMessage(Collections.nCopies(888, "?")));
@@ -108,7 +106,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void chunkPushNotificationReceiptIdsCanChunkCorrectly() {
+    public void chunkPushNotificationReceiptIdsCanChunkCorrectly() throws PushClientException {
         PushClient client = new PushClient();
         List<String> recieptIds = new ArrayList<>(Collections.nCopies(60, "F5741A13-BCDA-434B-A316-5DC0E6FFA94F"));
         List<List<String>> chunks = client.chunkPushNotificationReceiptIds(recieptIds);
@@ -120,7 +118,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void chunkTwoMessagesAndOneAdditionalMessageWithNoRecipient() {
+    public void chunkTwoMessagesAndOneAdditionalMessageWithNoRecipient() throws PushClientException {
         PushClient client = new PushClient();
 
         List<ExpoPushMessage> messages = new ArrayList<>(Collections.nCopies(2, new ExpoPushMessage("?")));
@@ -132,7 +130,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void chunkOneMessageWith100Recipients() {
+    public void chunkOneMessageWith100Recipients() throws PushClientException {
         PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
         List<ExpoPushMessageCustomData<Integer>> messages = new ArrayList<>();
         messages.add(new ExpoPushMessageCustomData<Integer>(Collections.nCopies(100, "?")));
@@ -144,7 +142,7 @@ class PushClientTestCustomData {
 
     @Test
     // TODO: This test only works because we assume that max-chunk size is 100
-    public void chunkOneMessageWith101Recipients() {
+    public void chunkOneMessageWith101Recipients() throws PushClientException {
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList<>();
         messages.add(new ExpoPushMessage(Collections.nCopies(101, "?")));
@@ -158,7 +156,7 @@ class PushClientTestCustomData {
 
     @Test
     // TODO: This test only works because we assume that max-chunk size is 100
-    public void chunkOneMessageWith99RecipientsAndTwoAdditionalMessages() {
+    public void chunkOneMessageWith99RecipientsAndTwoAdditionalMessages() throws PushClientException {
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList<>();
         messages.add(new ExpoPushMessage(Collections.nCopies(99, "?")));
@@ -175,7 +173,7 @@ class PushClientTestCustomData {
 
     @Test
     // TODO: This test only works because we assume that max-chunk size is 100
-    public void chunkOneMessageWith100RecipientsAndTwoAdditionalMessages() {
+    public void chunkOneMessageWith100RecipientsAndTwoAdditionalMessages() throws PushClientException {
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList<>();
         messages.add(new ExpoPushMessage(Collections.nCopies(100, "?")));
@@ -193,7 +191,7 @@ class PushClientTestCustomData {
 
     @Test
     // TODO: This test only works because we assume that max-chunk size is 100
-    public void chunk99MessagesAndOneAdditionalMessageWithTwoRecipients() {
+    public void chunk99MessagesAndOneAdditionalMessageWithTwoRecipients() throws PushClientException {
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList<>((Collections.nCopies(99, new ExpoPushMessage("?"))));
         messages.add(new ExpoPushMessage(Collections.nCopies(2, "?")));
@@ -207,7 +205,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void chunkNoMessage() {
+    public void chunkNoMessage() throws PushClientException {
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList<>();
         List<List<ExpoPushMessage>> chunks = client.chunkPushNotifications(messages);
@@ -215,7 +213,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void chunkSingleMessageWithNoRecipient() {
+    public void chunkSingleMessageWithNoRecipient() throws PushClientException {
         PushClient client = new PushClient();
         List<ExpoPushMessage> messages = new ArrayList();
         messages.add(new ExpoPushMessage());
@@ -223,7 +221,7 @@ class PushClientTestCustomData {
         assertEquals(0, chunks.size());
     }
 
-    private long _countAndValidateMessages(List<List<ExpoPushMessage>> chunks) {
+    private long _countAndValidateMessages(List<List<ExpoPushMessage>> chunks) throws PushClientException {
         long totalMessageCount = 0;
         for (List<ExpoPushMessage> chunk : chunks) {
             PushClient client = new PushClient();
@@ -236,7 +234,7 @@ class PushClientTestCustomData {
     }
 
     @Test
-    public void getOneReceipt() throws InterruptedException, ExecutionException {
+    public void getOneReceipt() throws InterruptedException, ExecutionException, PushClientException {
         final String SOURCE_JSON = "{" +
                 "    \"data\": " +
                 "    {" +
@@ -277,5 +275,100 @@ class PushClientTestCustomData {
         assertTrue(receipt.getMessage().startsWith("The Apple Push"));
         assertTrue(receipt.getMessage().endsWith("this error means."));
         assertEquals("MessageTooBig", receipt.getDetails().getError());
+    }
+
+
+    @Test
+    public void sendOnePushNotificationsAsyncThrowsExceptionWithTheFailedMessage() throws PushClientException {
+        PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);
+        when(pushServerResolverMock.postAsync(any(), any())).thenThrow(new CompletionException(new Exception("Exception!")));
+
+        PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
+        client.pushServerResolver = pushServerResolverMock;
+
+        ExpoPushMessageCustomData<Integer> myMessage = new ExpoPushMessageCustomData<>();
+        myMessage.setTo(Arrays.asList("Recipient 1"));
+        Map<String, Integer> data = new HashMap<>();
+        data.put("firstData", 111);
+        data.put("secondData", 222);
+        myMessage.setData(data);
+
+        List<ExpoPushMessageCustomData<Integer>> messages = new ArrayList<>(Arrays.asList(myMessage));
+        List<List<ExpoPushMessageCustomData<Integer>>> messageChunks = client.chunkPushNotifications(messages);
+
+        PushNotificationException pushNotificationException = null;
+
+        try {
+            for (List<ExpoPushMessageCustomData<Integer>> chunk : messageChunks) {
+                client.sendPushNotificationsAsync(chunk);
+            }
+        } catch (PushNotificationException e) {
+            pushNotificationException = e;
+        }
+
+        assertNotNull(pushNotificationException);
+        assertEquals(pushNotificationException.messages.size(), 1);
+        assertEquals(pushNotificationException.messages.get(0).getTo().get(0), "Recipient 1");
+        assertEquals(pushNotificationException.messages.get(0).getData().get("firstData"), 111);
+        assertEquals(pushNotificationException.messages.get(0).getData().get("secondData"), 222);
+    }
+
+    @Test
+    public void sendManyPushNotificationsAsyncThrowsExceptionWithOnlyTheFailedMessages() throws PushClientException {
+        PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);
+        when(pushServerResolverMock.postAsync(any(), any())).thenThrow(new CompletionException(new Exception("Exception!")));
+
+        PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
+        client.pushServerResolver = pushServerResolverMock;
+
+        ExpoPushMessageCustomData<Integer> myMessage = new ExpoPushMessageCustomData<>();
+        myMessage.setTo(Arrays.asList("Recipient 1"));
+        Map<String, Integer> data = new HashMap<>();
+        data.put("firstData", 111);
+        data.put("secondData", 222);
+        myMessage.setData(data);
+
+        List<ExpoPushMessageCustomData<Integer>> messages = new ArrayList<>(Arrays.asList(myMessage));
+        List<List<ExpoPushMessageCustomData<Integer>>> messageChunks = client.chunkPushNotifications(messages);
+
+        PushNotificationException pushNotificationException = null;
+
+        try {
+            for (List<ExpoPushMessageCustomData<Integer>> chunk : messageChunks) {
+                client.sendPushNotificationsAsync(chunk);
+            }
+        } catch (PushNotificationException e) {
+            pushNotificationException = e;
+        }
+
+        assertNotNull(pushNotificationException);
+        assertEquals(pushNotificationException.messages.size(), 1);
+        assertEquals(pushNotificationException.messages.get(0).getTo().get(0), "Recipient 1");
+        assertEquals(pushNotificationException.messages.get(0).getData().get("firstData"), 111);
+        assertEquals(pushNotificationException.messages.get(0).getData().get("secondData"), 222);
+    }
+    @Test
+    public void sendPushNotificationsReceiptAsyncThrowsExceptionWithAllFailedMessages() throws PushClientException {
+        PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);
+        when(pushServerResolverMock.postAsync(any(), any())).thenThrow(new CompletionException(new Exception("Exception!")));
+
+        PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
+        client.pushServerResolver = pushServerResolverMock;
+
+        List<List<String>> receiptIdChunks = client.chunkPushNotificationReceiptIds(Arrays.asList("2011eb6d-d4d3-440c-a93c-37ac4b51ea09"));
+
+        PushNotificationReceiptsException pushNotificationReceiptsException = null;
+
+        try {
+            for (List<String> chunk : receiptIdChunks) {
+                client.getPushNotificationReceiptsAsync(chunk);
+            }
+        } catch (PushNotificationReceiptsException e) {
+            pushNotificationReceiptsException = e;
+        }
+
+        assertNotNull(pushNotificationReceiptsException);
+        assertEquals(pushNotificationReceiptsException.ids.size(), 1);
+        assertEquals(pushNotificationReceiptsException.ids.get(0), "2011eb6d-d4d3-440c-a93c-37ac4b51ea09");
     }
 }
