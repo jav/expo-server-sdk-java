@@ -8,13 +8,13 @@ import io.github.jav.exposerversdk.helpers.PushServerResolver;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData<?>> {
     static public final long PUSH_NOTIFICATION_CHUNK_LIMIT = 100;
@@ -22,7 +22,7 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
     public URL baseApiUrl = null;
     public PushServerResolver pushServerResolver = new DefaultPushServerResolver();
 
-    public PushClientCustomData() {
+    public PushClientCustomData() throws PushClientException {
         try {
             baseApiUrl = new URL("https://exp.host/--/api/v2");
         } catch (MalformedURLException e) {
@@ -39,9 +39,10 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
         return this;
     }
 
-    public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<TPushMessage> messages) {
+    public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<TPushMessage> messages) throws PushNotificationException {
+        CompletableFuture<List<ExpoPushTicket>> ret = null;
         try {
-            return _postNotificationAsync(new URL(baseApiUrl + "/push/send"), messages)
+            ret = _postNotificationAsync(new URL(baseApiUrl + "/push/send"), messages)
                     .thenApply((String jsonString) -> {
                         try {
                             ObjectMapper mapper = new ObjectMapper();
@@ -55,14 +56,16 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
                             throw new PushNotificationException(e, messages);
                         }
                     });
-        } catch (MalformedURLException e) {
-            throw new PushClientException(e);
+        } catch (Exception e) {
+            throw new PushNotificationException(e, messages);
         }
+        return ret;
     }
 
-    public CompletableFuture<List<ExpoPushReceiept>> getPushNotificationReceiptsAsync(List<String> _ids) {
+    public CompletableFuture<List<ExpoPushReceiept>> getPushNotificationReceiptsAsync(List<String> _ids) throws PushNotificationReceiptsException {
+        CompletableFuture<List<ExpoPushReceiept>> ret = null;
         try {
-            return _postReceiptsAsync(new URL(baseApiUrl + "/push/getReceipts"), _ids)
+            ret = _postReceiptsAsync(new URL(baseApiUrl + "/push/getReceipts"), _ids)
                     .thenApply((String jsonString) -> {
                         try {
                             ObjectMapper mapper = new ObjectMapper();
@@ -79,16 +82,17 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
                                 retList.add(epr);
                             }
                             return retList;
-                        } catch (IOException e) {
-                            throw new PushNotificationReceiptException(e);
+                        } catch (Exception e) {
+                            throw new PushNotificationReceiptsException(e, _ids);
                         }
                     });
-        } catch (MalformedURLException e) {
-            throw new PushNotificationReceiptException(e);
+        } catch (Exception e) {
+            throw new PushNotificationReceiptsException(e, _ids);
         }
+        return ret;
     }
 
-    protected <T> CompletableFuture<String> _postNotificationAsync(URL url, List<T> messages) {
+    protected CompletableFuture<String> _postNotificationAsync(URL url, List<? extends TPushMessage> messages) throws CompletionException {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = null;
 
@@ -96,7 +100,7 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
             json = objectMapper.
                     writeValueAsString(messages);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new PushNotificationException(e, messages);
         }
         return pushServerResolver.postAsync(url, json);
     }
@@ -104,12 +108,13 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
 
     private class JsonReceiptHelper<T> {
         public List<T> ids;
+
         public JsonReceiptHelper(List<T> _ids) {
             ids = _ids;
         }
     }
 
-    private <T> CompletableFuture<String> _postReceiptsAsync(URL url, List<T> receipts) throws URISyntaxException {
+    private <T> CompletableFuture<String> _postReceiptsAsync(URL url, List<T> receipts) throws CompletionException {
         JsonReceiptHelper<T> jsonReceiptHelper = new PushClientCustomData.JsonReceiptHelper(receipts);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -119,8 +124,9 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
             json = objectMapper.
                     writeValueAsString(jsonReceiptHelper);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new CompletionException(e);
         }
+
         return pushServerResolver.postAsync(url, json);
     }
 
@@ -176,7 +182,7 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
                 if (chunkMessagesCount >= PUSH_NOTIFICATION_CHUNK_LIMIT) {
                     // Cap this chunk here if it already exceeds PUSH_NOTIFICATION_CHUNK_LIMIT.
                     // Then create a new chunk to continue on the remaining recipients for this message.
-                    // Because we're using generics, we can't use the constructor. Instead, copy the message and
+                    // Because we're using generics, we can't use the constructor. Instead, clone() the message
                     TPushMessage tmpCopy = (TPushMessage) message.clone();
                     tmpCopy.setTo(partialTo);
                     chunk.add(tmpCopy);

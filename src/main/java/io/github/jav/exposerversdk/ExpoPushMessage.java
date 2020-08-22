@@ -24,5 +24,5 @@ public class ExpoPushMessage extends ExpoPushMessageCustomData<Object> {
     public ExpoPushMessage(String _to) {
         super(_to);
     }
-};
+}
 

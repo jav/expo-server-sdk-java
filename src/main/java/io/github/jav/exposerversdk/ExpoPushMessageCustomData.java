@@ -8,7 +8,7 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"_debug"})
-public class ExpoPushMessageCustomData<T>{
+public class ExpoPushMessageCustomData<T> {
 
     private List<String> to = null;
     private Map<String, T> data = null;
@@ -43,10 +43,12 @@ public class ExpoPushMessageCustomData<T>{
     @Override
     public Object clone() {
         try {
-            return (ExpoPushMessageCustomData<T>) super.clone();
-        } catch (CloneNotSupportedException e) {
+            return getClass().newInstance();
+        } catch (InstantiationException  | IllegalAccessException e) {
             return new ExpoPushMessageCustomData<T>(this.getTo(), this);
+
         }
+        //return new ExpoPushMessageCustomData<T>(this.getTo(), this);
     }
 
     public ExpoPushMessageCustomData(List<String> _to) {

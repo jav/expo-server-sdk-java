@@ -1,32 +1,13 @@
 package io.github.jav.exposerversdk;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.jav.exposerversdk.helpers.DefaultPushServerResolver;
-import io.github.jav.exposerversdk.helpers.PushServerResolver;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 public class PushClient extends PushClientCustomData<ExpoPushMessage> {
 
-    public PushClient() {
-        super();
     public PushClient() throws PushClientException {
-        try {
-            baseApiUrl = new URL("https://exp.host/--/api/v2");
-        } catch (MalformedURLException e) {
-            throw new PushClientException(e);
-        }
+        super();
     }
 
     public URL getBaseApiUrl() {
@@ -39,7 +20,12 @@ public class PushClient extends PushClientCustomData<ExpoPushMessage> {
     }
 
     @Override
-    public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<ExpoPushMessage> messages) {
+    public CompletableFuture<List<ExpoPushTicket>> sendPushNotificationsAsync(List<ExpoPushMessage> messages) throws PushNotificationException {
         return super.sendPushNotificationsAsync(messages);
+    }
+
+    @Override
+    public List<List<ExpoPushMessage>> chunkPushNotifications(List<ExpoPushMessage> messages) {
+        return super.chunkPushNotifications(messages);
     }
 }
