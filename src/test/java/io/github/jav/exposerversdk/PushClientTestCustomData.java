@@ -434,7 +434,10 @@ class PushClientTestCustomData {
         ept.setId("1");
         tickets.add(ept);
         ept = new ExpoPushTicket();
-        ept.setStatus(Status.OK);
+        ept.setStatus(Status.ERROR);
+        ExpoPushTicket.Details details = new ExpoPushTicket.Details();
+        details.setError(TicketError.DEVICENOTREGISTERED);
+        ept.setDetails(details);
         ept.setId("2");
         tickets.add(ept);
         ept = new ExpoPushTicket();
@@ -444,14 +447,9 @@ class PushClientTestCustomData {
 
         PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
 
-        List<ExpoPushMessageCustomData<Integer>> successfullMessages = client.filterAllMessagesWithStatus(messages, tickets, null);
-        assertEquals(2, successfullMessages.size());
-        assertEquals("Recipient 1", successfullMessages.get(0).getTo().get(0));
-        assertEquals("Recipient 3", successfullMessages.get(1).getTo().get(0));
-
-        List<ExpoPushMessageCustomData<Integer>> failedMessages = client.filterAllMessagesWithStatus(messages, tickets, TicketError.DEVICENOTREGISTERED);
+        List<ExpoPushMessageCustomData<Integer>> failedMessages = client.filterAllMessagesWithError(messages, tickets, TicketError.DEVICENOTREGISTERED);
         assertEquals(1, failedMessages.size());
-        assertEquals("Recipient 2", successfullMessages.get(0).getTo().get(0));
-
+        assertEquals("Recipient 2", failedMessages.get(0).getTo().get(0));
 
     }
+}

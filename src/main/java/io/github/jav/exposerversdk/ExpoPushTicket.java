@@ -2,6 +2,7 @@ package io.github.jav.exposerversdk;
 
 import com.fasterxml.jackson.annotation.*;
 import io.github.jav.exposerversdk.enums.Status;
+import io.github.jav.exposerversdk.enums.TicketError;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,16 +82,16 @@ public class ExpoPushTicket  {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties({"apns", "fcm"})
     public static class Details {
-        private String error;
+        private TicketError error;
         private Integer sentAt;
         @JsonIgnore
         private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-        public String getError() {
+        public TicketError getError() {
             return error;
         }
 
-        public ExpoPushTicket.Details setError(String error) {
+        public ExpoPushTicket.Details setError(TicketError error) {
             this.error = error;
             return this;
         }

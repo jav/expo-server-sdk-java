@@ -3,6 +3,8 @@ package io.github.jav.exposerversdk;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.jav.exposerversdk.enums.Status;
+import io.github.jav.exposerversdk.enums.TicketError;
 import io.github.jav.exposerversdk.helpers.DefaultPushServerResolver;
 import io.github.jav.exposerversdk.helpers.PushServerResolver;
 
@@ -103,6 +105,19 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
             throw new PushNotificationException(e, messages);
         }
         return pushServerResolver.postAsync(url, json);
+    }
+
+    public List<TPushMessage> filterAllMessagesWithError(List<TPushMessage> messages, List<ExpoPushTicket> tickets, TicketError ticketError) {
+        List<TPushMessage> filteredMessages = new ArrayList<>();
+
+        for (int i = 0; i < tickets.size(); i++) {
+            ExpoPushTicket ticket = tickets.get(i);
+            if (ticket.getStatus() == Status.ERROR && ticket.getDetails().getError() == ticketError) {
+                TPushMessage message = messages.get(i);
+                filteredMessages.add(message);
+            }
+        }
+        return filteredMessages;
     }
 
 
