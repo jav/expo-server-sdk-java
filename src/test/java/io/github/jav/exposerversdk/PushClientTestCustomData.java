@@ -228,7 +228,7 @@ class PushClientTestCustomData {
         for (List<ExpoPushMessage> chunk : chunks) {
             PushClient client = new PushClient();
             long chunkMessagesCount = client._getActualMessagesCount(chunk);
-            assert (chunkMessagesCount <= PushClient.PUSH_NOTIFICATION_CHUNK_LIMIT);
+            assert (chunkMessagesCount <= client.PUSH_NOTIFICATION_CHUNK_LIMIT);
             totalMessageCount += chunkMessagesCount;
         }
         return totalMessageCount;
