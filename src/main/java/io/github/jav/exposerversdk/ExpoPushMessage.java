@@ -13,6 +13,10 @@ public class ExpoPushMessage extends ExpoPushMessageCustomData<Object> {
         super();
     }
 
+    public ExpoPushMessage(ExpoPushMessage _message) {
+        super(_message);
+    }
+
     public ExpoPushMessage(List<String> _to, ExpoPushMessageCustomData<Object> _message) {
         super(_to, _message);
     }
@@ -23,6 +27,11 @@ public class ExpoPushMessage extends ExpoPushMessageCustomData<Object> {
 
     public ExpoPushMessage(String _to) {
         super(_to);
+    }
+
+    @Override
+    public Object clone() {
+        return new ExpoPushMessage(this);
     }
 }
 

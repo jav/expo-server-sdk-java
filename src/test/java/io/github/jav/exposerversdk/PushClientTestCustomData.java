@@ -3,6 +3,8 @@ package io.github.jav.exposerversdk;
 import io.github.jav.exposerversdk.enums.Status;
 import io.github.jav.exposerversdk.helpers.PushServerResolver;
 import org.junit.jupiter.api.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -315,21 +317,65 @@ class PushClientTestCustomData {
 
     @Test
     public void sendManyPushNotificationsAsyncThrowsExceptionWithOnlyTheFailedMessages() throws PushClientException {
+        final String TICKETS_JSON = "{" +
+                "    \"data\": " +
+                "     [" +
+                "         {" +
+                "           \"status\": \"ok\"," +
+                "           \"id\":\"2011eb6d-d4d3-440c-a93c-37ac4b51ea09\" " +
+                "         }" +
+                "     ]" +
+                "}";
+
         PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);
-        when(pushServerResolverMock.postAsync(any(), any())).thenThrow(new CompletionException(new Exception("Exception!")));
+
+        when(pushServerResolverMock.postAsync(any(), any())).thenAnswer(new Answer() {
+                    private int count = 0;
+
+                    public Object answer(InvocationOnMock invocation) {
+
+                        if (count++ % 2 == 0) {
+                            CompletableFuture<String> mockResponseFuture = new CompletableFuture<>().completedFuture(TICKETS_JSON);
+                            return mockResponseFuture;
+                        } else {
+                            throw new CompletionException(new Exception("Exception!"));
+                        }
+                    }
+                });
 
         PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
+        client.PUSH_NOTIFICATION_CHUNK_LIMIT = 1; // Ensure there's only one message per chunk.
         client.pushServerResolver = pushServerResolverMock;
 
-        ExpoPushMessageCustomData<Integer> myMessage = new ExpoPushMessageCustomData<>();
-        myMessage.setTo(Arrays.asList("Recipient 1"));
-        Map<String, Integer> data = new HashMap<>();
-        data.put("firstData", 111);
-        data.put("secondData", 222);
-        myMessage.setData(data);
+        List<ExpoPushMessageCustomData<Integer>> myMessages = new ArrayList<>();
+        ExpoPushMessageCustomData<Integer> myMessage;
+        Map<String, Integer> data;
 
-        List<ExpoPushMessageCustomData<Integer>> messages = new ArrayList<>(Arrays.asList(myMessage));
-        List<List<ExpoPushMessageCustomData<Integer>>> messageChunks = client.chunkPushNotifications(messages);
+        myMessage = new ExpoPushMessageCustomData<>();
+        myMessage.setTo(Arrays.asList("Recipient 1"));
+        data = new HashMap<>();
+        data.put("firstData", 11);
+        data.put("secondData", 12);
+        myMessage.setData(data);
+        myMessages.add(myMessage);
+
+        myMessage = new ExpoPushMessageCustomData<>();
+        myMessage.setTo(Arrays.asList("Recipient 2"));
+        data = new HashMap<>();
+        data.put("firstData", 21);
+        data.put("secondData", 22);
+        myMessage.setData(data);
+        myMessages.add(myMessage);
+
+        myMessage = new ExpoPushMessageCustomData<>();
+        myMessage.setTo(Arrays.asList("Recipient 3"));
+        data = new HashMap<>();
+        data.put("firstData", 13);
+        data.put("secondData", 23);
+        myMessage.setData(data);
+        myMessages.add(myMessage);
+
+        List<List<ExpoPushMessageCustomData<Integer>>> messageChunks = client.chunkPushNotifications(myMessages);
 
         PushNotificationException pushNotificationException = null;
 
@@ -342,11 +388,12 @@ class PushClientTestCustomData {
         }
 
         assertNotNull(pushNotificationException);
-        assertEquals(pushNotificationException.messages.size(), 1);
-        assertEquals(pushNotificationException.messages.get(0).getTo().get(0), "Recipient 1");
-        assertEquals(pushNotificationException.messages.get(0).getData().get("firstData"), 111);
-        assertEquals(pushNotificationException.messages.get(0).getData().get("secondData"), 222);
+        assertEquals(1, pushNotificationException.messages.size());
+        assertEquals("Recipient 2", pushNotificationException.messages.get(0).getTo().get(0));
+        assertEquals(21, pushNotificationException.messages.get(0).getData().get("firstData"));
+        assertEquals(22, pushNotificationException.messages.get(0).getData().get("secondData"));
     }
+
     @Test
     public void sendPushNotificationsReceiptAsyncThrowsExceptionWithAllFailedMessages() throws PushClientException {
         PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);

@@ -26,6 +26,20 @@ public class ExpoPushMessageCustomData<T> {
         to = new ArrayList<>();
     }
 
+    public ExpoPushMessageCustomData(ExpoPushMessageCustomData<T> _message) {
+        to = _message.to;
+        data = _message.data;
+        title = _message.title;
+        subtitle = _message.subtitle;
+        body = _message.body;
+        sound = _message.sound;
+        ttl = _message.ttl;
+        expiration = _message.expiration;
+        priority = _message.priority;
+        badge = _message.badge;
+        channelId = _message.channelId;
+    }
+
     public ExpoPushMessageCustomData(List<String> _to, ExpoPushMessageCustomData<T> _message) {
         to = _to;
         data = _message.data;
@@ -42,13 +56,7 @@ public class ExpoPushMessageCustomData<T> {
 
     @Override
     public Object clone() {
-        try {
-            return getClass().newInstance();
-        } catch (InstantiationException  | IllegalAccessException e) {
-            return new ExpoPushMessageCustomData<T>(this.getTo(), this);
-
-        }
-        //return new ExpoPushMessageCustomData<T>(this.getTo(), this);
+            return new ExpoPushMessageCustomData(this);
     }
 
     public ExpoPushMessageCustomData(List<String> _to) {
