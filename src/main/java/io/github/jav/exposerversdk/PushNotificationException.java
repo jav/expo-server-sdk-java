@@ -1,13 +1,13 @@
 package io.github.jav.exposerversdk;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletionException;
 
-public class PushNotificationException<T> extends CompletionException {
-    public IOException exception;
-    public List<? extends ExpoPushMessageWithCustomData> messages;
-    public PushNotificationException(    IOException e, List<T>messages)    {
+public class PushNotificationException extends CompletionException {
+    public Exception exception;
+    public List<? extends ExpoPushMessageCustomData> messages;
+
+    public PushNotificationException(Exception e, List<? extends ExpoPushMessageCustomData<?>> messages) {
         this.exception = e;
         this.messages = messages;
     }
