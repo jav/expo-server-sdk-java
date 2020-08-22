@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.jav.exposerversdk.enums.ReceiptError;
 import io.github.jav.exposerversdk.enums.Status;
 import org.junit.jupiter.api.Test;
 
@@ -91,7 +92,7 @@ class ExpoPushRecieptTest {
         ept = new ExpoPushReceiept();
         ept.setStatus(Status.ERROR);
         ept.setMessage("message");
-        ept.setDetails( new ExpoPushReceiept.Details().setError("MessageTooBig"));
+        ept.setDetails( new ExpoPushReceiept.Details().setError(ReceiptError.MESSAGETOOBIG));
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
     }
@@ -122,7 +123,7 @@ class ExpoPushRecieptTest {
 
         assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", epr.getId());
         assertEquals(Status.ERROR, epr.getStatus());
-        assertEquals("MessageTooBig", epr.getDetails().getError());
+        assertEquals(ReceiptError.MESSAGETOOBIG, epr.getDetails().getError());
     }
 
     @Test
@@ -148,9 +149,9 @@ class ExpoPushRecieptTest {
         epr2.setMessage("message");
         assertEquals(epr1, epr2);
 
-        epr1.setDetails((new ExpoPushReceiept.Details()).setError("MessageTooBig"));
+        epr1.setDetails((new ExpoPushReceiept.Details()).setError(ReceiptError.MESSAGETOOBIG));
         assertNotEquals(epr1, epr2);
-        epr2.setDetails((new ExpoPushReceiept.Details()).setError("MessageTooBig"));
+        epr2.setDetails((new ExpoPushReceiept.Details()).setError(ReceiptError.MESSAGETOOBIG));
         assertEquals(epr1, epr2);
     }
 }

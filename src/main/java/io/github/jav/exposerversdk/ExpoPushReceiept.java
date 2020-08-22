@@ -1,6 +1,7 @@
 package io.github.jav.exposerversdk;
 
 import com.fasterxml.jackson.annotation.*;
+import io.github.jav.exposerversdk.enums.ReceiptError;
 import io.github.jav.exposerversdk.enums.Status;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
@@ -92,16 +93,16 @@ public class ExpoPushReceiept {
     @JsonIgnoreProperties({"apns", "fcm"})
     public static class Details {
 
-        private String error;
+        private ReceiptError error;
         private Integer sentAt;
         @JsonIgnore
         private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-        public String getError() {
+        public ReceiptError getError() {
             return error;
         }
 
-        public Details setError(String error) {
+        public Details setError(ReceiptError error) {
             this.error = error;
             return this;
         }
