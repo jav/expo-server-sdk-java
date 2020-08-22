@@ -19,8 +19,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData<?>> {
-    static public long PUSH_NOTIFICATION_CHUNK_LIMIT = 100;
-    static public final long PUSH_NOTIFICATION_RECEIPT_CHUNK_LIMIT = 300;
+    public long PUSH_NOTIFICATION_CHUNK_LIMIT = 100;
+    public long PUSH_NOTIFICATION_RECEIPT_CHUNK_LIMIT = 300;
     public URL baseApiUrl = null;
     public PushServerResolver pushServerResolver = new DefaultPushServerResolver();
 

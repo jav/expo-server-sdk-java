@@ -230,7 +230,7 @@ class PushClientTestCustomData {
         for (List<T> chunk : chunks) {
             PushClientCustomData<T> client = new PushClientCustomData<T>();
             long chunkMessagesCount = client._getActualMessagesCount(chunk);
-            assert (chunkMessagesCount <= PushClient.PUSH_NOTIFICATION_CHUNK_LIMIT);
+            assert (chunkMessagesCount <= client.PUSH_NOTIFICATION_CHUNK_LIMIT);
             totalMessageCount += chunkMessagesCount;
         }
         return totalMessageCount;
