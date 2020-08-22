@@ -1,6 +1,7 @@
 package io.github.jav.exposerversdk;
 
 import io.github.jav.exposerversdk.enums.Status;
+import io.github.jav.exposerversdk.enums.TicketError;
 import io.github.jav.exposerversdk.helpers.PushServerResolver;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -330,18 +331,18 @@ class PushClientTestCustomData {
         PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);
 
         when(pushServerResolverMock.postAsync(any(), any())).thenAnswer(new Answer() {
-                    private int count = 0;
+            private int count = 0;
 
-                    public Object answer(InvocationOnMock invocation) {
+            public Object answer(InvocationOnMock invocation) {
 
-                        if (count++ % 2 == 0) {
-                            CompletableFuture<String> mockResponseFuture = new CompletableFuture<>().completedFuture(TICKETS_JSON);
-                            return mockResponseFuture;
-                        } else {
-                            throw new CompletionException(new Exception("Exception!"));
-                        }
-                    }
-                });
+                if (count++ % 2 == 0) {
+                    CompletableFuture<String> mockResponseFuture = new CompletableFuture<>().completedFuture(TICKETS_JSON);
+                    return mockResponseFuture;
+                } else {
+                    throw new CompletionException(new Exception("Exception!"));
+                }
+            }
+        });
 
         PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
         client.PUSH_NOTIFICATION_CHUNK_LIMIT = 1; // Ensure there's only one message per chunk.
@@ -418,4 +419,39 @@ class PushClientTestCustomData {
         assertEquals(pushNotificationReceiptsException.ids.size(), 1);
         assertEquals(pushNotificationReceiptsException.ids.get(0), "2011eb6d-d4d3-440c-a93c-37ac4b51ea09");
     }
-}
+
+    @Test
+    public void filterTicketsWithStatus() throws PushClientException {
+        List<ExpoPushMessageCustomData<Integer>> messages = new ArrayList<>();
+        messages.add(new ExpoPushMessageCustomData<>("Recipient 1"));
+        messages.add(new ExpoPushMessageCustomData<>("Recipient 2"));
+        messages.add(new ExpoPushMessageCustomData<>("Recipient 3"));
+
+        ExpoPushTicket ept;
+        List<ExpoPushTicket> tickets = new ArrayList<>();
+        ept = new ExpoPushTicket();
+        ept.setStatus(Status.OK);
+        ept.setId("1");
+        tickets.add(ept);
+        ept = new ExpoPushTicket();
+        ept.setStatus(Status.OK);
+        ept.setId("2");
+        tickets.add(ept);
+        ept = new ExpoPushTicket();
+        ept.setStatus(Status.OK);
+        ept.setId("3");
+        tickets.add(ept);
+
+        PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
+
+        List<ExpoPushMessageCustomData<Integer>> successfullMessages = client.filterAllMessagesWithStatus(messages, tickets, null);
+        assertEquals(2, successfullMessages.size());
+        assertEquals("Recipient 1", successfullMessages.get(0).getTo().get(0));
+        assertEquals("Recipient 3", successfullMessages.get(1).getTo().get(0));
+
+        List<ExpoPushMessageCustomData<Integer>> failedMessages = client.filterAllMessagesWithStatus(messages, tickets, TicketError.DEVICENOTREGISTERED);
+        assertEquals(1, failedMessages.size());
+        assertEquals("Recipient 2", successfullMessages.get(0).getTo().get(0));
+
+
+    }
