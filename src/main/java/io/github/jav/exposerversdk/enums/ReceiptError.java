@@ -2,12 +2,21 @@ package io.github.jav.exposerversdk.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public enum TicketError {
+public enum ReceiptError {
         @JsonProperty("DeviceNotRegistered")
-        DEVICENOTREGISTERED("DeviceNotRegistered");
+        DEVICENOTREGISTERED("DeviceNotRegistered"),
+        @JsonProperty("MessageTooBig")
+        MESSAGETOOBIG("MessageTooBig"),
+        @JsonProperty("MessageRateExceeded")
+        MESSAGERATEEXCEEDED("MessageRateExceeded"),
+        @JsonProperty("InvalidCredentials")
+        INVALIDCREDENTIALS("InvalidCredentials"),
+        @JsonProperty("InvalidProviderToken")
+        INVALIDPROVIDERTOKEN("InvalidProviderToken");
+
 
         private String error;
-        private TicketError(String error) {
+        private ReceiptError(String error) {
                 this.error = error;
         }
 
