@@ -2,21 +2,17 @@ package io.github.jav.exposerversdk.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public enum Priority {
-        @JsonProperty("default")
-        OK("default"),
-        @JsonProperty("high")
-        ERROR("high"),
-        @JsonProperty("normal")
-        NORMAL("normal");
+public enum TicketError {
+        @JsonProperty("DeviceNotRegistered")
+        DEVICENOTREGISTERED("DeviceNotRegistered");
 
-        private String priority;
-        private Priority(String priority) {
-                this.priority = priority;
+        private String error;
+        private TicketError(String error) {
+                this.error = error;
         }
 
         @Override
         public String toString(){
-                return priority;
+                return error;
         }
 }
