@@ -1,15 +1,17 @@
 package io.github.jav.exposerversdk.helpers;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executors;
 
 public class DefaultPushServerResolver implements PushServerResolver {
-    public CompletableFuture<String> postAsync(URL url, String json) {
+    public CompletableFuture<String> postAsync(URL url, String json) throws CompletionException {
         String finalJson = json;
 
         CompletableFuture<String> retCompletableFuture
@@ -25,6 +27,8 @@ public class DefaultPushServerResolver implements PushServerResolver {
             try (OutputStream os = urlConnection.getOutputStream()) {
                 byte[] input = finalJson.getBytes("utf-8");
                 os.write(input, 0, input.length);
+            } catch (IOException e) {
+                throw new CompletionException(e);
             }
 
             StringBuilder sb = new StringBuilder();
@@ -35,6 +39,9 @@ public class DefaultPushServerResolver implements PushServerResolver {
                 while ((inputLine = in.readLine()) != null)
                     sb.append(inputLine);
                 in.close();
+            } catch (IOException e) {
+                throw new CompletionException(e);
+
             } finally {
                 urlConnection.disconnect();
                 retCompletableFuture.complete(sb.toString());

@@ -8,7 +8,7 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"_debug"})
-public class ExpoPushMessageCustomData<T>{
+public class ExpoPushMessageCustomData<T> {
 
     private List<String> to = null;
     private Map<String, T> data = null;
@@ -24,6 +24,20 @@ public class ExpoPushMessageCustomData<T>{
 
     public ExpoPushMessageCustomData() {
         to = new ArrayList<>();
+    }
+
+    public ExpoPushMessageCustomData(ExpoPushMessageCustomData<T> _message) {
+        to = _message.to;
+        data = _message.data;
+        title = _message.title;
+        subtitle = _message.subtitle;
+        body = _message.body;
+        sound = _message.sound;
+        ttl = _message.ttl;
+        expiration = _message.expiration;
+        priority = _message.priority;
+        badge = _message.badge;
+        channelId = _message.channelId;
     }
 
     public ExpoPushMessageCustomData(List<String> _to, ExpoPushMessageCustomData<T> _message) {
@@ -42,11 +56,7 @@ public class ExpoPushMessageCustomData<T>{
 
     @Override
     public Object clone() {
-        try {
-            return (ExpoPushMessageCustomData<T>) super.clone();
-        } catch (CloneNotSupportedException e) {
-            return new ExpoPushMessageCustomData<T>(this.getTo(), this);
-        }
+            return new ExpoPushMessageCustomData(this);
     }
 
     public ExpoPushMessageCustomData(List<String> _to) {
