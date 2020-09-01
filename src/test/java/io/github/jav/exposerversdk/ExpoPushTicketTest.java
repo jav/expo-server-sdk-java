@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.jav.exposerversdk.enums.Status;
+import io.github.jav.exposerversdk.enums.TicketError;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -79,7 +80,7 @@ class ExpoPushTicketTest {
         generator.writeStringField("status", "error");
         generator.writeStringField("message", "message");
         generator.writeObjectFieldStart("details");
-        generator.writeStringField("error", "MessageTooBig");
+        generator.writeStringField("error", "DeviceNotRegistered");
         generator.writeNumberField("sentAt", 123);
         generator.writeEndObject();
         generator.writeStringField("message", "message");
@@ -90,7 +91,7 @@ class ExpoPushTicketTest {
         ept.setStatus(Status.ERROR);
         ept.setMessage("message");
 
-        ept.setDetails(new ExpoPushTicket.Details().setError("MessageTooBig").setSentAt(123));
+        ept.setDetails(new ExpoPushTicket.Details().setError(TicketError.DEVICENOTREGISTERED).setSentAt(123));
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
     }
@@ -119,9 +120,9 @@ class ExpoPushTicketTest {
         ept2.setMessage("message");
         assertEquals(ept1, ept2);
 
-        ept1.setDetails(new ExpoPushTicket.Details().setError("MessageTooBig"));
+        ept1.setDetails(new ExpoPushTicket.Details().setError(TicketError.DEVICENOTREGISTERED));
         assertNotEquals(ept1, ept2);
-        ept2.setDetails(new ExpoPushTicket.Details().setError("MessageTooBig"));
+        ept2.setDetails(new ExpoPushTicket.Details().setError(TicketError.DEVICENOTREGISTERED));
         assertEquals(ept1, ept2);
     }
 }

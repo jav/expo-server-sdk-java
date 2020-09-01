@@ -1,5 +1,6 @@
 package io.github.jav.exposerversdk;
 
+import io.github.jav.exposerversdk.enums.ReceiptError;
 import io.github.jav.exposerversdk.enums.Status;
 import io.github.jav.exposerversdk.helpers.PushServerResolver;
 import org.junit.jupiter.api.Test;
@@ -279,7 +280,7 @@ class PushClientTest {
         assertEquals(Status.ERROR, receipt.getStatus());
         assertTrue(receipt.getMessage().startsWith("The Apple Push"));
         assertTrue(receipt.getMessage().endsWith("this error means."));
-        assertEquals("MessageTooBig", receipt.getDetails().getError());
+        assertEquals(ReceiptError.MESSAGETOOBIG, receipt.getDetails().getError());
     }
 
     @Test

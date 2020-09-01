@@ -3,6 +3,8 @@ package io.github.jav.exposerversdk;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.jav.exposerversdk.enums.Status;
+import io.github.jav.exposerversdk.enums.TicketError;
 import io.github.jav.exposerversdk.helpers.DefaultPushServerResolver;
 import io.github.jav.exposerversdk.helpers.PushServerResolver;
 
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.stream.Collectors;
 
 public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData<?>> {
     public long PUSH_NOTIFICATION_CHUNK_LIMIT = 100;
@@ -103,6 +106,47 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
             throw new PushNotificationException(e, messages);
         }
         return pushServerResolver.postAsync(url, json);
+    }
+
+    public List<ExpoPushMessageTicketPair<TPushMessage>> zipMessagesTickets(
+            List<TPushMessage> messages,
+            List<ExpoPushTicket> tickets
+    ) {
+        List<ExpoPushMessageTicketPair<TPushMessage>> ret = new ArrayList<>();
+
+        for (int i = 0; i < messages.size(); i++) {
+            ret.add(new ExpoPushMessageTicketPair<>(messages.get(i), tickets.get(i)));
+        }
+
+        return ret;
+    }
+
+
+    public List<ExpoPushMessageTicketPair<TPushMessage>> filterAllSuccessfulMessages(
+            List<ExpoPushMessageTicketPair<TPushMessage>> zippedMessagesTickets) {
+        return zippedMessagesTickets.stream().filter(p -> p.ticket.getStatus() == Status.OK).collect(Collectors.toList());
+    }
+
+    public List<ExpoPushMessageTicketPair<TPushMessage>> filterAllMessagesWithError(
+            List<ExpoPushMessageTicketPair<TPushMessage>> zippedMessagesTickets) {
+        return filterAllMessagesWithError(zippedMessagesTickets, null);
+    }
+
+
+    public List<ExpoPushMessageTicketPair<TPushMessage>> filterAllMessagesWithError(
+            List<ExpoPushMessageTicketPair<TPushMessage>> zippedMessagesTickets, TicketError ticketError) {
+
+        return zippedMessagesTickets.stream().filter(
+                p -> p.ticket.getStatus() == Status.ERROR && (ticketError == null || p.ticket.getDetails().getError() == ticketError)
+        ).collect(Collectors.toList());
+    }
+
+    public List<String> getTicketIdsFromPairs(List<ExpoPushMessageTicketPair<TPushMessage>> okTicketMessagePairs) {
+        return getTicketIds(okTicketMessagePairs.stream().map(p->p.ticket).collect(Collectors.toList()));
+    }
+
+    public List<String> getTicketIds(List<ExpoPushTicket> okTicketMessages) {
+        return okTicketMessages.stream().map(t->t.getId()).collect(Collectors.toList());
     }
 
 
