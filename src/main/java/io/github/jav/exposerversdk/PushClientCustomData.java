@@ -141,6 +141,14 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
         ).collect(Collectors.toList());
     }
 
+    public List<String> getTicketIdsFromPairs(List<ExpoPushMessageTicketPair<TPushMessage>> okTicketMessagePairs) {
+        return getTicketIds(okTicketMessagePairs.stream().map(p->p.ticket).collect(Collectors.toList()));
+    }
+
+    public List<String> getTicketIds(List<ExpoPushTicket> okTicketMessages) {
+        return okTicketMessages.stream().map(t->t.getId()).collect(Collectors.toList());
+    }
+
 
     private class JsonReceiptHelper<T> {
         public List<T> ids;
