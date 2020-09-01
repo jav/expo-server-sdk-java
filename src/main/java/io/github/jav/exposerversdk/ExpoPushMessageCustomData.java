@@ -75,6 +75,14 @@ public class ExpoPushMessageCustomData<T> {
         this.to = to;
     }
 
+    public void addTo(String to) {
+        this.to.add(to);
+    }
+
+    public void addAllTo(List<String> to) {
+        this.to.addAll(to);
+    }
+
     public Map<String, T> getData() {
         return data;
     }
