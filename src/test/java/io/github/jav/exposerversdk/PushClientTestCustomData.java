@@ -448,9 +448,10 @@ class PushClientTestCustomData {
 
         PushClientCustomData<ExpoPushMessageCustomData<Integer>> client = new PushClientCustomData<>();
 
-        List<ExpoPushMessageCustomData<Integer>> failedMessages = client.filterAllMessagesWithError(messages, tickets, TicketError.DEVICENOTREGISTERED);
+        List<ExpoPushMessageTicketPair< ExpoPushMessageCustomData<Integer>>> zipMessage = client.zipMessagesTickets(messages, tickets);
+        List<ExpoPushMessageTicketPair<ExpoPushMessageCustomData<Integer>>> failedMessages = client.filterAllMessagesWithError(zipMessage, TicketError.DEVICENOTREGISTERED);
         assertEquals(1, failedMessages.size());
-        assertEquals("Recipient 2", failedMessages.get(0).getTo().get(0));
+        assertEquals("Recipient 2", failedMessages.get(0).message.getTo().get(0));
 
     }
 }

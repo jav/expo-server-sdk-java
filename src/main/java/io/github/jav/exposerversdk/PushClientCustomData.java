@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.stream.Collectors;
 
 public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData<?>> {
     public long PUSH_NOTIFICATION_CHUNK_LIMIT = 100;
@@ -107,17 +108,37 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
         return pushServerResolver.postAsync(url, json);
     }
 
-    public List<TPushMessage> filterAllMessagesWithError(List<TPushMessage> messages, List<ExpoPushTicket> tickets, TicketError ticketError) {
-        List<TPushMessage> filteredMessages = new ArrayList<>();
+    public List<ExpoPushMessageTicketPair<TPushMessage>> zipMessagesTickets(
+            List<TPushMessage> messages,
+            List<ExpoPushTicket> tickets
+    ) {
+        List<ExpoPushMessageTicketPair<TPushMessage>> ret = new ArrayList<>();
 
-        for (int i = 0; i < tickets.size(); i++) {
-            ExpoPushTicket ticket = tickets.get(i);
-            if (ticket.getStatus() == Status.ERROR && ticket.getDetails().getError() == ticketError) {
-                TPushMessage message = messages.get(i);
-                filteredMessages.add(message);
-            }
+        for (int i = 0; i < messages.size(); i++) {
+            ret.add(new ExpoPushMessageTicketPair<>(messages.get(i), tickets.get(i)));
         }
-        return filteredMessages;
+
+        return ret;
+    }
+
+
+    public List<ExpoPushMessageTicketPair<TPushMessage>> filterAllSuccessfulMessages(
+            List<ExpoPushMessageTicketPair<TPushMessage>> zippedMessagesTickets) {
+        return zippedMessagesTickets.stream().filter(p -> p.ticket.getStatus() == Status.OK).collect(Collectors.toList());
+    }
+
+    public List<ExpoPushMessageTicketPair<TPushMessage>> filterAllMessagesWithError(
+            List<ExpoPushMessageTicketPair<TPushMessage>> zippedMessagesTickets) {
+        return filterAllMessagesWithError(zippedMessagesTickets, null);
+    }
+
+
+    public List<ExpoPushMessageTicketPair<TPushMessage>> filterAllMessagesWithError(
+            List<ExpoPushMessageTicketPair<TPushMessage>> zippedMessagesTickets, TicketError ticketError) {
+
+        return zippedMessagesTickets.stream().filter(
+                p -> p.ticket.getStatus() == Status.ERROR && (ticketError == null || p.ticket.getDetails().getError() == ticketError)
+        ).collect(Collectors.toList());
     }
 
 
