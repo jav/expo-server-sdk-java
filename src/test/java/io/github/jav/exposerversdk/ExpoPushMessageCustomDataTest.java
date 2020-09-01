@@ -14,9 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-class ExpoPushMessageTest {
+class ExpoPushMessageCustomDataTest {
 
     @Test
     void testHashcodeImplementation() {
@@ -24,15 +25,15 @@ class ExpoPushMessageTest {
         List<String> recipientsB =Arrays.asList(new String[]{"recipient1", "recipient2"});
         String titleA = "title";
         String titleB = "title";
-        Map<String, Object> mapA = new HashMap<>();
-        mapA.put("myString", "foo");
-        Map<String, Object> mapB = new HashMap<>();
-        mapB.put("myString", "foo");
+        Map<String, Integer> mapA = new HashMap<>();
+        mapA.put("myInt", 42);
+        Map<String, Integer> mapB = new HashMap<>();
+        mapB.put("myInt", 42);
         ExpoMessageSound soundA = new ExpoMessageSound();
         ExpoMessageSound soundB = new ExpoMessageSound();
 
-        ExpoPushMessage a = new ExpoPushMessage();
-        ExpoPushMessage b = new ExpoPushMessage();
+        ExpoPushMessageCustomData<Integer> a = new ExpoPushMessageCustomData<>();
+        ExpoPushMessageCustomData<Integer> b = new ExpoPushMessageCustomData<>();
         assertEquals(a, b);
 
         // check equals self, as in issue https://github.com/jav/expo-server-sdk-java/issues/6
@@ -72,7 +73,7 @@ class ExpoPushMessageTest {
         JsonGenerator generator = null;
         String epmJson = null;
         String jsonControl = null;
-        ExpoPushMessage epm = null;
+        ExpoPushMessageCustomData<Integer> epm = null;
 
         // Empty object
         writer = new StringWriter();
@@ -83,7 +84,7 @@ class ExpoPushMessageTest {
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
-        epm = new ExpoPushMessage();
+        epm = new ExpoPushMessageCustomData<>();
         epmJson = mapper.writeValueAsString(epm);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(epmJson));
 
@@ -102,15 +103,15 @@ class ExpoPushMessageTest {
         generator.writeNumberField("volume", 60);
         generator.writeEndObject();
         generator.writeObjectFieldStart("data");
-        generator.writeStringField("myString", "foo");
+        generator.writeNumberField("myInt", 42);
         generator.writeEndObject();
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
-        epm = new ExpoPushMessage(Arrays.asList("Recipient 1", "Recipient 2"));
+        epm = new ExpoPushMessageCustomData<>(Arrays.asList("Recipient 1", "Recipient 2"));
         epm.setTitle("My title");
-        Map<String, Object> myMap = new HashMap<>();
-        myMap.put("myString", "foo");
+        Map<String, Integer> myMap = new HashMap<>();
+        myMap.put("myInt", 42);
         epm.setData(myMap);
         ExpoMessageSound ems = new ExpoMessageSound("default");
         ems.setVolume(60);
