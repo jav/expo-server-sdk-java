@@ -269,13 +269,13 @@ class PushClientTest {
         PushClient client = new PushClient();
         client.pushServerResolver = pushServerResolverMock;
 
-        List<CompletableFuture<List<ExpoPushReceiept>>> messageRepliesFutures = new ArrayList<>();
+        List<CompletableFuture<List<ExpoPushReceipt>>> messageRepliesFutures = new ArrayList<>();
         List<List<String>> receiptIdChunks = client.chunkPushNotificationReceiptIds(Arrays.asList("2011eb6d-d4d3-440c-a93c-37ac4b51ea09"));
         for (List<String> chunk : receiptIdChunks) {
             messageRepliesFutures.add(client.getPushNotificationReceiptsAsync(chunk));
         }
 
-        ExpoPushReceiept receipt = messageRepliesFutures.get(0).get().get(0);
+        ExpoPushReceipt receipt = messageRepliesFutures.get(0).get().get(0);
         assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", receipt.getId());
         assertEquals(Status.ERROR, receipt.getStatus());
         assertTrue(receipt.getMessage().startsWith("The Apple Push"));
