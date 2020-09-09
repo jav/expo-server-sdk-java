@@ -18,22 +18,22 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 class ExpoPushRecieptTest {
     @Test
     void testHashcodeImplementation() {
-        ExpoPushReceiept a = new ExpoPushReceiept();
-        ExpoPushReceiept b = new ExpoPushReceiept();
+        ExpoPushReceipt a = new ExpoPushReceipt();
+        ExpoPushReceipt b = new ExpoPushReceipt();
         assertEquals(a, b);
 
         // check equals self, as in issue https://github.com/jav/expo-server-sdk-java/issues/6
         assertEquals(a, a);
 
-        a.setDetails(new ExpoPushReceiept.Details());
+        a.setDetails(new ExpoPushReceipt.Details());
         assertNotEquals(a, b);
-        b.setDetails(new ExpoPushReceiept.Details());
+        b.setDetails(new ExpoPushReceipt.Details());
         assertEquals(a, b);
 
-        ExpoPushReceiept.Details detailsA = a.getDetails();
+        ExpoPushReceipt.Details detailsA = a.getDetails();
         detailsA.setAdditionalProperty("foo", "bar");
         assertNotEquals(a, b);
-        ExpoPushReceiept.Details detailsB = b.getDetails();
+        ExpoPushReceipt.Details detailsB = b.getDetails();
         detailsB.setAdditionalProperty("foo", "bar");
         assertEquals(a, b);
     }
@@ -47,7 +47,7 @@ class ExpoPushRecieptTest {
         JsonGenerator generator = null;
         String emsJson = null;
         String jsonControl = null;
-        ExpoPushReceiept ept = null;
+        ExpoPushReceipt ept = null;
 
         // Empty object
         writer = new StringWriter();
@@ -56,7 +56,7 @@ class ExpoPushRecieptTest {
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
-        ept = new ExpoPushReceiept();
+        ept = new ExpoPushReceipt();
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
 
@@ -70,7 +70,7 @@ class ExpoPushRecieptTest {
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
-        ept = new ExpoPushReceiept();
+        ept = new ExpoPushReceipt();
         ept.setStatus(Status.OK);
         ept.setId("123");
         emsJson = mapper.writeValueAsString(ept);
@@ -89,10 +89,10 @@ class ExpoPushRecieptTest {
         generator.writeEndObject();
         generator.close();
         jsonControl = writer.toString();
-        ept = new ExpoPushReceiept();
+        ept = new ExpoPushReceipt();
         ept.setStatus(Status.ERROR);
         ept.setMessage("message");
-        ept.setDetails( new ExpoPushReceiept.Details().setError(ReceiptError.MESSAGETOOBIG));
+        ept.setDetails( new ExpoPushReceipt.Details().setError(ReceiptError.MESSAGETOOBIG));
         emsJson = mapper.writeValueAsString(ept);
         assertEquals(mapper.readTree(jsonControl), mapper.readTree(emsJson));
     }
@@ -118,7 +118,7 @@ class ExpoPushRecieptTest {
         ObjectMapper mapper = new ObjectMapper();
 
         JsonNode dataNode = mapper.readTree(SOURCE_JSON).get("2011eb6d-d4d3-440c-a93c-37ac4b51ea09");
-        ExpoPushReceiept epr = mapper.treeToValue(dataNode, ExpoPushReceiept.class);
+        ExpoPushReceipt epr = mapper.treeToValue(dataNode, ExpoPushReceipt.class);
         epr.setId("2011eb6d-d4d3-440c-a93c-37ac4b51ea09");
 
         assertEquals("2011eb6d-d4d3-440c-a93c-37ac4b51ea09", epr.getId());
@@ -128,10 +128,10 @@ class ExpoPushRecieptTest {
 
     @Test
     void equals() throws IOException {
-        ExpoPushReceiept epr1;
-        epr1 = new ExpoPushReceiept();
-        ExpoPushReceiept epr2;
-        epr2 = new ExpoPushReceiept();
+        ExpoPushReceipt epr1;
+        epr1 = new ExpoPushReceipt();
+        ExpoPushReceipt epr2;
+        epr2 = new ExpoPushReceipt();
         assertEquals(epr1, epr2);
 
         epr1.setId("1");
@@ -149,9 +149,9 @@ class ExpoPushRecieptTest {
         epr2.setMessage("message");
         assertEquals(epr1, epr2);
 
-        epr1.setDetails((new ExpoPushReceiept.Details()).setError(ReceiptError.MESSAGETOOBIG));
+        epr1.setDetails((new ExpoPushReceipt.Details()).setError(ReceiptError.MESSAGETOOBIG));
         assertNotEquals(epr1, epr2);
-        epr2.setDetails((new ExpoPushReceiept.Details()).setError(ReceiptError.MESSAGETOOBIG));
+        epr2.setDetails((new ExpoPushReceipt.Details()).setError(ReceiptError.MESSAGETOOBIG));
         assertEquals(epr1, epr2);
     }
 }

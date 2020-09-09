@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"_debug"})
-public class ExpoPushReceiept {
+public class ExpoPushReceipt {
 
     private String id = null;
     private Status status = null;
@@ -75,7 +75,7 @@ public class ExpoPushReceiept {
         if (_o.getClass() != getClass())
             return false;
 
-        ExpoPushReceiept o = (ExpoPushReceiept) _o;
+        ExpoPushReceipt o = (ExpoPushReceipt) _o;
         return new EqualsBuilder().
                 append(status, o.status).
                 append(id, o.id).
