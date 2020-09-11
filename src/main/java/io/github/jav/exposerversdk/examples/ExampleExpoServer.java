@@ -23,7 +23,7 @@ public class ExampleExpoServer {
             throw new Error("Token:" + recipient + " is not a valid token.");
 
         ExpoPushMessage expoPushMessage = new ExpoPushMessage();
-        expoPushMessage.getTo().add(recipient);
+        expoPushMessage.addTo(recipient);
         expoPushMessage.setTitle(title);
         expoPushMessage.setBody(message);
 
