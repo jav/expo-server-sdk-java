@@ -49,11 +49,29 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
                     .thenApply((String jsonString) -> {
                         try {
                             ObjectMapper mapper = new ObjectMapper();
-                            JsonNode dataNode = mapper.readTree(jsonString).get("data");
+                            JsonNode responseJson = mapper.readTree(jsonString);
+
                             List<ExpoPushTicket> retList = new ArrayList<>();
-                            for (JsonNode node : dataNode) {
-                                retList.add(mapper.convertValue(node, ExpoPushTicket.class));
+
+                            JsonNode dataNode = mapper.readTree(jsonString).get("data");
+                            if (dataNode != null) {
+                                for (JsonNode node : dataNode) {
+                                    retList.add(mapper.convertValue(node, ExpoPushTicket.class));
+                                }
                             }
+
+                            JsonNode errorsNode = responseJson.get("errors");
+                            if (errorsNode != null) {
+                                List<ExpoPushError> errorsList = new ArrayList<>();
+                                for (JsonNode node : errorsNode) {
+                                    errorsList.add(mapper.convertValue(node, ExpoPushError.class));
+                                }
+                                throw new PushNotificationException(
+                                        new PushNotificationErrorsException(errorsList, retList),
+                                        messages
+                                );
+                            }
+
                             return retList;
                         } catch (IOException e) {
                             throw new PushNotificationException(e, messages);
@@ -65,26 +83,46 @@ public class PushClientCustomData<TPushMessage extends ExpoPushMessageCustomData
         return ret;
     }
 
-    public CompletableFuture<List<ExpoPushReceipt>> getPushNotificationReceiptsAsync(List<String> _ids) throws PushNotificationReceiptsException {
+        public CompletableFuture<List<ExpoPushReceipt>> getPushNotificationReceiptsAsync(List<String> _ids) throws PushNotificationReceiptsException {
         CompletableFuture<List<ExpoPushReceipt>> ret = null;
         try {
             ret = _postReceiptsAsync(new URL(baseApiUrl + "/push/getReceipts"), _ids)
                     .thenApply((String jsonString) -> {
                         try {
                             ObjectMapper mapper = new ObjectMapper();
-                            JsonNode dataNode = mapper.readTree(jsonString).get("data");
-                            List<ExpoPushReceipt> retList = new ArrayList<>();
-                            Iterator<Map.Entry<String, JsonNode>> it = dataNode.fields();
-                            while (it.hasNext()) {
-                                Map.Entry<String, JsonNode> field = it.next();
-                                String key = field.getKey();
-                                JsonNode expoPushRecieptJsonNode = field.getValue();
-                                ExpoPushReceipt epr = mapper.treeToValue(expoPushRecieptJsonNode, ExpoPushReceipt.class);
+                            JsonNode responseJson = mapper.readTree(jsonString);
 
-                                epr.setId(key);
-                                retList.add(epr);
+                            List<ExpoPushReceipt> retList = new ArrayList<>();
+
+                            JsonNode dataNode = responseJson.get("data");
+                            if (dataNode != null) {
+                                Iterator<Map.Entry<String, JsonNode>> it = dataNode.fields();
+                                while (it.hasNext()) {
+                                    Map.Entry<String, JsonNode> field = it.next();
+                                    String key = field.getKey();
+                                    JsonNode expoPushReceiptJsonNode = field.getValue();
+                                    ExpoPushReceipt epr = mapper.treeToValue(expoPushReceiptJsonNode, ExpoPushReceipt.class);
+
+                                    epr.setId(key);
+                                    retList.add(epr);
+                                }
                             }
+
+                            JsonNode errorsNode = responseJson.get("errors");
+                            if (errorsNode != null) {
+                                List<ExpoPushError> errorsList = new ArrayList<>();
+                                for (JsonNode node : errorsNode) {
+                                    errorsList.add(mapper.convertValue(node, ExpoPushError.class));
+                                }
+                                throw new PushNotificationReceiptsException(
+                                        new PushNotificationReceiptsErrorsException(errorsList, retList),
+                                        _ids
+                                );
+                            }
+
                             return retList;
+                        } catch (PushNotificationReceiptsException e) {
+                            throw e;
                         } catch (Exception e) {
                             throw new PushNotificationReceiptsException(e, _ids);
                         }
