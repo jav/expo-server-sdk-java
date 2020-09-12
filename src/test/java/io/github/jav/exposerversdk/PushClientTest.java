@@ -1,5 +1,6 @@
 package io.github.jav.exposerversdk;
 
+import io.github.jav.exposerversdk.enums.Priority;
 import io.github.jav.exposerversdk.enums.ReceiptError;
 import io.github.jav.exposerversdk.enums.Status;
 import io.github.jav.exposerversdk.helpers.PushServerResolver;
@@ -332,5 +333,121 @@ class PushClientTest {
         assertNotNull(pushNotificationReceiptsException);
         assertEquals(pushNotificationReceiptsException.ids.size(), 1);
         assertEquals(pushNotificationReceiptsException.ids.get(0), "2011eb6d-d4d3-440c-a93c-37ac4b51ea09");
+    }
+
+    @Test
+    public void sendPushNotificationsAsyncThrowsErrorsException() throws InterruptedException, ExecutionException, PushClientException {
+        final String RESPONSE_JSON = "{" +
+                "    \"errors\": [" +
+                "        { " +
+                "            \"code\":\"PUSH_TOO_MANY_EXPERIENCE_IDS\"," +
+                "            \"message\":\"All...tokens.\"," +
+                "            \"details\":{" +
+                "                \"@user1/project1\":[" +
+                "                    \"ExponentPushToken[AAAAAAAAAAABBBBBBBBBBB]\"" +
+                "                ]," +
+                "                \"@user2/project1\":[" +
+                "                    \"ExponentPushToken[AAAAAAAAAAABBBBBBBBBBB]\"" +
+                "                ]" +
+                "            }" +
+                "        }" +
+                "    ]" +
+                "}";
+        CompletableFuture<String> mockResponseFuture = CompletableFuture.completedFuture(RESPONSE_JSON);
+
+        PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);
+        when(pushServerResolverMock.postAsync(any(), any())).thenReturn(mockResponseFuture);
+
+        PushClient client = new PushClient();
+        client.pushServerResolver = pushServerResolverMock;
+
+        ExpoPushMessage message = new ExpoPushMessage();
+        message.setTo(Arrays.asList("ExponentPushToken[AAAAAAAAAAABBBBBBBBBBB]", "ExponentPushToken[AAAAAAAAAAABBBBBBBBBBB]"));
+        message.setPriority(Priority.NORMAL);
+        message.setChannelId("default");
+        message.setSound(new ExpoMessageSound("default"));
+
+        List<ExpoPushMessage> messages = new ArrayList<>(Arrays.asList(message));
+
+        CompletableFuture<List<ExpoPushTicket>> future = client.sendPushNotificationsAsync(messages);
+        try {
+            future.get();
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof PushNotificationException);
+            PushNotificationException pushNotificationException = (PushNotificationException)e.getCause();
+
+            assertTrue(pushNotificationException.exception instanceof PushNotificationErrorsException);
+            PushNotificationErrorsException errorsException = (PushNotificationErrorsException)pushNotificationException.exception;
+            assertEquals(1, errorsException.errors.size());
+            assertEquals(0, errorsException.data.size());
+
+            ExpoPushError error = errorsException.errors.get(0);
+            assertEquals("PUSH_TOO_MANY_EXPERIENCE_IDS", error.getCode());
+            assertEquals("All...tokens.", error.getMessage());
+        }
+    }
+
+    @Test
+    public void sendPushNotificationsAsyncThrowsErrorsExceptionWithData() throws InterruptedException, PushClientException {
+        final String RESPONSE_JSON = "{" +
+                "    \"data\": [" +
+                "        { " +
+                "            \"status\":\"error\"," +
+                "            \"message\":\"ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx] is not a registered push notification recipient\"," +
+                "            \"details\": {" +
+                "                \"error\": \"DeviceNotRegistered\"" +
+                "            }" +
+                "        }" +
+                "    ]," +
+                "    \"errors\": [" +
+                "        { " +
+                "            \"code\":\"PUSH_TOO_MANY_EXPERIENCE_IDS\"," +
+                "            \"message\":\"All...tokens.\"," +
+                "            \"details\":{" +
+                "                \"@user1/project1\":[" +
+                "                    \"ExponentPushToken[AAAAAAAAAAABBBBBBBBBBB]\"" +
+                "                ]," +
+                "                \"@user2/project1\":[" +
+                "                    \"ExponentPushToken[AAAAAAAAAAABBBBBBBBBBB]\"" +
+                "                ]" +
+                "            }" +
+                "        }" +
+                "    ]" +
+                "}";
+        CompletableFuture<String> mockResponseFuture = CompletableFuture.completedFuture(RESPONSE_JSON);
+
+        PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);
+        when(pushServerResolverMock.postAsync(any(), any())).thenReturn(mockResponseFuture);
+
+        PushClient client = new PushClient();
+        client.pushServerResolver = pushServerResolverMock;
+
+        ExpoPushMessage message = new ExpoPushMessage();
+        message.setTo(Arrays.asList("ExponentPushToken[AAAAAAAAAAABBBBBBBBBBB]", "ExponentPushToken[AAAAAAAAAAABBBBBBBBBBB]"));
+        message.setPriority(Priority.NORMAL);
+        message.setChannelId("default");
+        message.setSound(new ExpoMessageSound("default"));
+
+        List<ExpoPushMessage> messages = new ArrayList<>(Arrays.asList(message));
+
+        CompletableFuture<List<ExpoPushTicket>> future = client.sendPushNotificationsAsync(messages);
+        try {
+            future.get();
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof PushNotificationException);
+            PushNotificationException pushNotificationException = (PushNotificationException)e.getCause();
+
+            assertTrue(pushNotificationException.exception instanceof PushNotificationErrorsException);
+            PushNotificationErrorsException errorsException = (PushNotificationErrorsException)pushNotificationException.exception;
+            assertEquals(1, errorsException.errors.size());
+            assertEquals(1, errorsException.data.size());
+
+            ExpoPushError error = errorsException.errors.get(0);
+            assertEquals("PUSH_TOO_MANY_EXPERIENCE_IDS", error.getCode());
+            assertEquals("All...tokens.", error.getMessage());
+
+            ExpoPushTicket ticket = errorsException.data.get(0);
+            assertEquals(Status.ERROR, ticket.getStatus());
+        }
     }
 }
