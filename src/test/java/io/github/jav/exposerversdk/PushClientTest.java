@@ -336,7 +336,7 @@ class PushClientTest {
     }
 
     @Test
-    public void sendPushNotificationsAsyncThrowsErrorsException() throws InterruptedException, ExecutionException, PushClientException {
+    public void sendPushNotificationsAsyncThrowsErrorsException() throws InterruptedException, PushClientException {
         final String RESPONSE_JSON = "{" +
                 "    \"errors\": [" +
                 "        { " +
@@ -448,6 +448,43 @@ class PushClientTest {
 
             ExpoPushTicket ticket = errorsException.data.get(0);
             assertEquals(Status.ERROR, ticket.getStatus());
+        }
+    }
+
+    @Test
+    public void getTooManyReceiptsThrowsErrorsException() throws InterruptedException, PushClientException {
+        final String RESPONSE_JSON = "{" +
+                "    \"errors\": [" +
+                "        { " +
+                "            \"code\":\"PUSH_TOO_MANY_RECEIPTS\"," +
+                "            \"message\":\"Too many receipts.\"" +
+                "        }" +
+                "    ]" +
+                "}";
+        CompletableFuture<String> mockResponseFuture = CompletableFuture.completedFuture(RESPONSE_JSON);
+
+        PushServerResolver pushServerResolverMock = mock(PushServerResolver.class);
+        when(pushServerResolverMock.postAsync(any(), any())).thenReturn(mockResponseFuture);
+
+        PushClient client = new PushClient();
+        client.pushServerResolver = pushServerResolverMock;
+
+        CompletableFuture<List<ExpoPushReceipt>> future = client.getPushNotificationReceiptsAsync(Arrays.asList("1", "2"));
+        try {
+            future.get();
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof PushNotificationReceiptsException);
+            PushNotificationReceiptsException pushNotificationException = (PushNotificationReceiptsException)e.getCause();
+
+            assertTrue(pushNotificationException.exception instanceof PushNotificationReceiptsErrorsException);
+            PushNotificationReceiptsErrorsException errorsException =
+                    (PushNotificationReceiptsErrorsException)pushNotificationException.exception;
+            assertEquals(1, errorsException.errors.size());
+            assertEquals(0, errorsException.receipts.size());
+
+            ExpoPushError error = errorsException.errors.get(0);
+            assertEquals("PUSH_TOO_MANY_RECEIPTS", error.getCode());
+            assertEquals("Too many receipts.", error.getMessage());
         }
     }
 }
