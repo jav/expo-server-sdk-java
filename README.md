@@ -131,11 +131,11 @@ public class ExampleExpoServer {
 <dependency>
   <groupId>io.github.jav</groupId>
   <artifactId>expo-server-sdk</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 ## Gradle
-`implementation 'io.github.jav:expo-server-sdk:1.0.0'`
+`implementation 'io.github.jav:expo-server-sdk:1.1.0'`
 
 ## Maven central entry
 https://search.maven.org/artifact/io.github.jav/expo-server-sdk
