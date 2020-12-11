@@ -1,4 +1,4 @@
-f![Java CI with Maven](https://github.com/jav/expo-server-sdk-java/workflows/Java%20CI%20with%20Maven/badge.svg)
+![Java CI with Maven](https://github.com/jav/expo-server-sdk-java/workflows/Java%20CI%20with%20Maven/badge.svg)
 
 ## expo-server-sdk-java
 This is a java implementation of the [node server-side library](https://github.com/expo/expo-server-sdk-node) for working with expo using Java.
@@ -14,7 +14,7 @@ package io.github.jav.exposerversdk.examples;
 
 import io.github.jav.exposerversdk.ExpoPushMessage;
 import io.github.jav.exposerversdk.ExpoPushMessageTicketPair;
-import io.github.jav.exposerversdk.ExpoPushReceiept;
+import io.github.jav.exposerversdk.ExpoPushReceipt;
 import io.github.jav.exposerversdk.ExpoPushTicket;
 import io.github.jav.exposerversdk.PushClient;
 import io.github.jav.exposerversdk.PushClientException;
@@ -98,9 +98,9 @@ public class ExampleExpoServer {
         System.out.println("Fetching reciepts...");
 
         List<String> ticketIds = (client.getTicketIdsFromPairs(okTicketMessages));
-        CompletableFuture<List<ExpoPushReceiept>> receiptFutures = client.getPushNotificationReceiptsAsync(ticketIds);
+        CompletableFuture<List<ExpoPushReceipt>> receiptFutures = client.getPushNotificationReceiptsAsync(ticketIds);
 
-        List<ExpoPushReceiept> receipts = new ArrayList<>();
+        List<ExpoPushReceipt> receipts = new ArrayList<>();
         try {
             receipts = receiptFutures.get();
         } catch (ExecutionException e) {
@@ -112,7 +112,7 @@ public class ExampleExpoServer {
         System.out.println(
                 "Recieved " + receipts.size() + " receipts:");
 
-        for (ExpoPushReceiept reciept : receipts) {
+        for (ExpoPushReceipt reciept : receipts) {
             System.out.println(
                     "Receipt for id: " +
                             reciept.getId() +
