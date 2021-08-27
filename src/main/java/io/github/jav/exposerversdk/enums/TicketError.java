@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum TicketError {
         @JsonProperty("DeviceNotRegistered")
-        DEVICENOTREGISTERED("DeviceNotRegistered");
+        DEVICENOTREGISTERED("DeviceNotRegistered"),
+				@JsonProperty("InvalidCredentials")
+        INVALIDCREDENTIALS("InvalidCredentials");
 
         private String error;
         private TicketError(String error) {
