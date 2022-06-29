@@ -8,4 +8,12 @@ public class ExpoPushMessageTicketPair<TPushMessage> {
         this.message = message;
         this.ticket = ticket;
     }
+    
+    public TPushMessage getMessage() {
+        return message;
+    }
+
+    public ExpoPushTicket getTicket() {
+        return ticket;
+    }
 }
