@@ -1,4 +1,4 @@
-![Java CI with Maven](https://github.com/jav/expo-server-sdk-java/workflows/Java%20CI%20with%20Maven/badge.svg)
+[![Java CI with Maven](https://github.com/rowi1de/expo-server-sdk-java/actions/workflows/maven.yml/badge.svg)](https://github.com/rowi1de/expo-server-sdk-java/actions/workflows/maven.yml)
 
 
 # Looking for maintainer
