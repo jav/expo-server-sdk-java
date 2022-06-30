@@ -1,0 +1,34 @@
+name: Automatically Update Dependencies
+# `pull_request_target` grants access to secrets and runs in the scope of the *destination* branch.
+# Specifically we listen for the labelled event.
+on:
+  pull_request_target:
+    types: [labeled]
+
+jobs:
+  auto-merge-dependency-updates:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Enable Github Automerge
+      uses: alexwilson/enable-github-automerge-action@1.0.0
+      with:
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
+      if: github.event.pull_request.user.login == 'dependabot[bot]' && contains(github.event.pull_request.labels.*.name, 'dependencies')
+    
+
+  # Reference hmarr/auto-approve-action by commit SHA as it is an immutable reference to a
+  # known, "trusted" version of this 3rd party code.
+  # Note: This is a separate job to explicitly *not* check-out local code.
+  auto-approve-dependency-updates:
+    needs: auto-merge-dependency-updates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Approve dependabot PRs
+        uses: alexwilson/enable-github-automerge-action@1.0.0
+        if: github.event.pull_request.user.login == 'dependabot[bot]' && contains(github.event.pull_request.labels.*.name, 'dependencies')
+        with:
+         github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - id: auto-approve-dependabot
+        uses: hmarr/auto-approve-action@bca9db08da72b576ae3273e776e7ccf3f0a36e12
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
