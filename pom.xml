@@ -26,8 +26,8 @@
         </developer>
     </developers>
     <scm>
-        <connection>https://github.com/rowi1de/expo-server-sdk-java.git</connection>
-        <developerConnection>https://rowi1de/expo-server-sdk-java.git</developerConnection>
+        <connection>scm:git:${project.scm.url}</connection>
+        <developerConnection>scm:git:${project.scm.url}</developerConnection>
         <url>https://github.com/rowi1de/expo-server-sdk-java</url>
         <tag>HEAD</tag>
     </scm>
