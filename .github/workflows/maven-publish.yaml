@@ -25,6 +25,6 @@ jobs:
           release-branch-name: "master"
           git-release-bot-name: "release-bot"
           git-release-bot-email: "release-bot@example.com"
-          access-token: ${{ secrets.GITHUB_ACCESS_TOKEN }}"
+          access-token: ${{ secrets.MAVEN_PUBLISH_TOKEN }}"
           maven-release-publish: "true"
           maven-snapshot-publish: "true"
