@@ -19,6 +19,10 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
+          cache: 'maven'
+          
+      - name: JAVA_HOME
+        run: which java
 
       - name: Release
         uses: mg-smartrent/github-actions-maven-release@v1.5
