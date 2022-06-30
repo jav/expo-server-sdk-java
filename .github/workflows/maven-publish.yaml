@@ -21,9 +21,8 @@ jobs:
           distribution: temurin
 
       - name: Release
-        uses: qcastel/github-actions-maven-release@master
+        uses: mg-smartrent/github-actions-maven-release@v1.5
         with:
-          release-branch-name: "master"
           git-release-bot-name: "release-bot"
           git-release-bot-email: "release-bot@example.com"
           access-token: ${{ secrets.MAVEN_PUBLISH_TOKEN }}"
