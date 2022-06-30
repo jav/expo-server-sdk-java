@@ -29,6 +29,6 @@ jobs:
         with:
          github-token: "${{ secrets.GITHUB_TOKEN }}"
       - id: auto-approve-dependabot
-        uses: hmarr/auto-approve-action@bca9db08da72b576ae3273e776e7ccf3f0a36e12
+        uses: hmarr/auto-approve-action@24ec4c8cc344fe1cdde70ff37e55ace9e848a1d8
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
