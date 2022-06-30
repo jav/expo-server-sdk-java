@@ -22,7 +22,10 @@ jobs:
           cache: 'maven'
           
       - name: JAVA_HOME
-        run: which java
+        id: java-home
+        run: | 
+          which java
+          echo "::set-output name=path::$(which java)"
 
       - name: Release
         uses: mg-smartrent/github-actions-maven-release@v1.5
@@ -30,4 +33,6 @@ jobs:
           git-release-bot-name: "release-bot"
           git-release-bot-email: "release-bot@example.com"
           access-token: ${{ secrets.MAVEN_PUBLISH_TOKEN }}"
+        env:
+          JAVA_HOME:  ${{ steps.java-home.outputs.path }}
 
