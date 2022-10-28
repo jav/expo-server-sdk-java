@@ -1,7 +1,16 @@
 # This repository has moved!
-[Now hosted here](https://github.com/nia-medtech/expo-server-sdk-java)
+
+## New maintainer and repository
+[Now hosted here](https://github.com/nia-medtech/expo-server-sdk-java) with a new maintainer!
 
 Thank you [Oliver Welter](mailto:oliver.welter@nia-medtech.com) and [nia-medtech](https://nia-medtech.com) for offering to take over the maintainer role!
+
+Don't forget to update your project dependencies!
+
+
+
+
+
 
 ## expo-server-sdk-java
 This is a java implementation of the [node server-side library](https://github.com/expo/expo-server-sdk-node) for working with expo using Java.
