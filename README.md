@@ -1,5 +1,6 @@
 # This repository has moved!
 [Now hosted here](https://github.com/nia-medtech/expo-server-sdk-java)
+
 Thank you [Oliver Welter](mailto:oliver.welter@nia-medtech.com) and [nia-medtech](https://nia-medtech.com) for offering to take over the maintainer role!
 
 ## expo-server-sdk-java
